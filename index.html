@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <title>KhahanA OS 1.0</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -114,7 +114,7 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 .home-grid{position:relative;z-index:2;flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:18px 0;padding:calc(var(--sb) + 14px) 18px 6px;align-content:start;}
 .ai{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;position:relative;}
 .ai:active .aib{transform:scale(0.85);}
-.aib{width:54px;height:54px;border-radius:13px;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;transition:transform 0.1s;box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2);}
+.aib{width:60px;height:60px;border-radius:14px;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;transition:transform 0.1s;box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2);}
 .aib::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.35),rgba(255,255,255,0.04));border-radius:13px 13px 0 0;pointer-events:none;}
 .aib svg{position:relative;z-index:1;}
 .an{font-size:10px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);font-weight:500;text-align:center;}
@@ -162,7 +162,7 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 .nc-card-app{font-size:10px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
 .nc-card-msg{font-size:13px;color:#fff;margin-top:2px;line-height:1.35;}
 .nc-card-time{font-size:10px;color:rgba(255,255,255,0.25);margin-top:2px;}
-.nc-zone{position:absolute;top:0;left:0;right:0;height:16px;z-index:8499;cursor:pointer;}
+.nc-zone{position:absolute;top:var(--sb);left:0;right:0;height:16px;z-index:8499;cursor:pointer;}
 
 /* ═══ APP SCREENS ═══ */
 .as{position:absolute;inset:0;z-index:6000;display:none;flex-direction:column;background:#e5e5ea;animation:appIn 0.25s ease-out;}
@@ -440,7 +440,7 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
   <div class="cc-grid">
     <div class="cc-tile active" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><div class="cc-label">${t("wifi")}</div><div class="cc-val">KhahanA-5G</div></div>
     <div class="cc-tile active" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">${t("bluetooth")}</div><div class="cc-val">On</div></div>
-    <div class="cc-tile" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8l-8-4.5L5 8v8l8 4.5z" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">Airplane</div><div class="cc-val">Off</div></div>
+    <div class="cc-tile" id="ccAir" onclick="ccToggleAirplane()"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8l-8-4.5L5 8v8l8 4.5z" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">Airplane</div><div class="cc-val">Off</div></div>
     <div class="cc-tile" id="ccF" onclick="toggleFlash()"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">Flashlight</div><div class="cc-val">Off</div></div>
   </div>
   <div class="cc-slider-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg><div class="cc-slider" onclick="ccSl(event,this)"><div class="cc-slider-fill" style="width:70%"></div></div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
@@ -808,7 +808,7 @@ function bSet(c){
   c.innerHTML=`
   ${idSection}
   <div class="sg"><div class="sr"><div class="sr-i" style="background:var(--accent)"><svg viewBox="0 0 24 24"><path d="M21 16V8l-8-4.5L5 8v8l8 4.5z" fill="#fff"/></svg></div><span class="sr-l">${t("airplaneMode")}</span><div class="tg" id="airTg" onclick="toggleAirplane(this)"></div></div><div class="sr" id="wifiRow"><div class="sr-i" style="background:#007aff"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><span class="sr-l">Wi-Fi</span><span class="sr-v" id="wifiVal">KhahanA-5G</span><span class="sr-a">›</span></div><div class="sr" id="btRow"><div class="sr-i" style="background:#007aff"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><span class="sr-l">Bluetooth</span><span class="sr-v" id="btVal">On</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#4cd964"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><span class="sr-l">${t("cellular")}</span><span class="sr-v">du</span><span class="sr-a">›</span></div></div>
-  <div class="sg"><div class="sr" onclick="toggleNightMode()"><div class="sr-i" style="background:#ff9500"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#fff"/></svg></div><span class="sr-l">${t("displayBright")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#5856d6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><span class="sr-l">${t("wallpaper")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#ff2d55"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><span class="sr-l">${t("privacy")}</span><span class="sr-a">›</span></div></div>
+  <div class="sg"><div class="sr"><div class="sr-i" style="background:#ff9500"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#fff"/></svg></div><span class="sr-l">${t("displayBright")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#5856d6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><span class="sr-l">${t("wallpaper")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#ff2d55"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><span class="sr-l">${t("privacy")}</span><span class="sr-a">›</span></div></div>
   <div class="sg"><div class="sr"><div class="sr-i" style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#fff"/></svg></div><span class="sr-l">${t("battery")}</span><span class="sr-v" id="setBatt">100%</span><span class="sr-a">›</span></div></div>
   <div class="sgt">${t("displayRes")}</div>
   <div class="rp" id="rp"></div>
@@ -932,10 +932,10 @@ function toggleAirplane(el){
   airplaneOn=!airplaneOn;
   el.classList.toggle('on');
   sndTick();
-  const carrier=document.querySelector('.sb-l span');
+  const carrier=document.getElementById('sbCarrier');
   const dots=document.querySelectorAll('.dots div');
   if(airplaneOn){
-    if(carrier)carrier.textContent='✈ Airplane';
+    if(carrier)carrier.textContent='✈';
     dots.forEach(d=>d.style.opacity='0.15');
     // Disable wifi/bt in settings
     const wv=document.getElementById('wifiVal');if(wv)wv.textContent='Off';
@@ -947,11 +947,33 @@ function toggleAirplane(el){
     const bv=document.getElementById('btVal');if(bv)bv.textContent='On';
   }
   // Also toggle in control center
-  const ccAir=document.querySelectorAll('.cc-tile')[2];
+  const ccAir=document.getElementById('ccAir');
   if(ccAir){
     if(airplaneOn){ccAir.classList.add('active');ccAir.querySelector('.cc-val').textContent='On';}
     else{ccAir.classList.remove('active');ccAir.querySelector('.cc-val').textContent='Off';}
   }
+}
+// CC version of airplane toggle (called from control center)
+function ccToggleAirplane(){
+  const ccAir=document.getElementById('ccAir');
+  airplaneOn=!airplaneOn;
+  sndTick();
+  const carrier=document.getElementById('sbCarrier');
+  const dots=document.querySelectorAll('.dots div');
+  if(airplaneOn){
+    if(carrier)carrier.textContent='✈';
+    dots.forEach(d=>d.style.opacity='0.15');
+    if(ccAir){ccAir.classList.add('active');ccAir.querySelector('.cc-val').textContent='On';}
+  }else{
+    if(carrier)carrier.textContent='KhahanA';
+    dots.forEach((d,i)=>{d.style.opacity=i===4?'0.3':'1';});
+    if(ccAir){ccAir.classList.remove('active');ccAir.querySelector('.cc-val').textContent='Off';}
+  }
+  // Sync settings toggle if open
+  const airTg=document.getElementById('airTg');
+  if(airTg){if(airplaneOn)airTg.classList.add('on');else airTg.classList.remove('on');}
+  const wv=document.getElementById('wifiVal');if(wv)wv.textContent=airplaneOn?'Off':'KhahanA-5G';
+  const bv=document.getElementById('btVal');if(bv)bv.textContent=airplaneOn?'Off':'On';
 }
 
 // ═══ SEARCH / SPOTLIGHT ═══
