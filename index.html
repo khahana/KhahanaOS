@@ -29,15 +29,22 @@ body{
 canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
 
 /* ═══ STATUS BAR ═══ */
+/* Classic style (SE/8): carrier left, time center, battery right */
+/* Modern style (X+): time left, battery+icons right, no center carrier */
 .sb{position:absolute;top:0;left:0;right:0;height:var(--sb);display:none;align-items:center;justify-content:space-between;padding:0 14px;z-index:9999;font-size:11px;font-weight:600;color:#fff;letter-spacing:0.2px;}
 .sb.vis{display:flex;}
 .sb-l{display:flex;align-items:center;gap:3px;}
 .sb-c{position:absolute;left:50%;transform:translateX(-50%);font-weight:700;font-size:11px;}
 .sb-r{display:flex;align-items:center;gap:4px;font-size:10px;}
-.sb-charge{display:none;margin-left:-2px;}
-.sb-charge.on{display:inline;}
-.sb-charge svg{width:8px;height:12px;fill:#4cd964;vertical-align:middle;}
+.sb-time-l{display:none;font-weight:700;font-size:15px;letter-spacing:-0.3px;}
 .dots{display:flex;gap:1.5px;}.dots div{width:3px;border-radius:1px;background:#fff;}
+/* Modern notch mode */
+.sb.modern{height:54px;padding:14px 20px 0;align-items:flex-start;}
+.sb.modern .sb-c{display:none;}
+.sb.modern .sb-time-l{display:block;}
+.sb.modern .sb-l .dots{display:none;}
+.sb.modern .sb-l span{display:none;}
+.sb.modern .sb-l{gap:0;}
 
 /* ═══ SETUP WIZARD ═══ */
 .setup{position:absolute;inset:0;z-index:9500;display:flex;flex-direction:column;background:#000;color:#fff;transition:opacity 0.5s;}
@@ -92,7 +99,7 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 /* ═══ LOCK ═══ */
 .lock{position:absolute;inset:0;z-index:5000;display:flex;flex-direction:column;align-items:center;transition:opacity 0.4s,transform 0.4s;}
 .lock.off{opacity:0;transform:translateY(-100%);pointer-events:none;}
-.lock-time{font-size:68px;font-weight:100;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,0.3);line-height:1;letter-spacing:-2px;margin-top:calc(var(--sb) + 44px);position:relative;z-index:2;}
+.lock-time{font-size:68px;font-weight:100;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,0.3);line-height:1;letter-spacing:-2px;margin-top:calc(var(--sb) + 30px);position:relative;z-index:2;}
 .lock-date{font-size:17px;font-weight:300;color:rgba(255,255,255,0.75);margin-top:6px;position:relative;z-index:2;}
 .lock-bottom{position:absolute;bottom:calc(var(--bot) + 20px);width:100%;display:flex;flex-direction:column;align-items:center;z-index:2;}
 .slide-t{width:240px;height:42px;background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:21px;border:1px solid rgba(255,255,255,0.08);position:relative;overflow:hidden;cursor:pointer;}
@@ -319,9 +326,16 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 
 <!-- STATUS BAR -->
 <div class="sb" id="sb">
-  <div class="sb-l"><div class="dots"><div style="height:4px"></div><div style="height:6px"></div><div style="height:8px"></div><div style="height:10px"></div><div style="height:12px;opacity:0.3"></div></div><span style="font-size:10px;margin-left:2px;font-weight:500">KhahanA</span></div>
+  <div class="sb-l">
+    <span class="sb-time-l" id="sbtL"></span>
+    <div class="dots"><div style="height:4px"></div><div style="height:6px"></div><div style="height:8px"></div><div style="height:10px"></div><div style="height:12px;opacity:0.3"></div></div>
+    <span style="font-size:10px;margin-left:2px;font-weight:500" id="sbCarrier">KhahanA</span>
+  </div>
   <div class="sb-c" id="sbt"></div>
-  <div class="sb-r"><span id="battPct">100%</span><span class="sb-charge" id="chargeBolt"><svg viewBox="0 0 12 20"><path d="M7 0L2 10h4L4 20l6-12H6L8 0z" fill="#4cd964"/></svg></span><svg viewBox="0 0 28 13" width="18" height="9"><rect x="0" y="1.5" width="23" height="10" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="24" y="4" width="2.5" height="5" rx="1" fill="#fff" opacity="0.4"/><rect x="2" y="3.5" width="19" height="6" rx="1" fill="#4cd964" id="battBar"/></svg></div>
+  <div class="sb-r">
+    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" style="opacity:0.8"><path d="M5 12.55a11 11 0 0114.08 0M8.53 16.11a6 6 0 016.95 0M12 20h.01"/></svg>
+    <svg viewBox="0 0 28 13" width="22" height="11"><rect x="0" y="1.5" width="23" height="10" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="24" y="4" width="2.5" height="5" rx="1" fill="#fff" opacity="0.4"/><rect x="2" y="3.5" width="19" height="6" rx="1" fill="#4cd964" id="battBar"/></svg>
+  </div>
 </div>
 
 <!-- SETUP WIZARD -->
@@ -482,7 +496,13 @@ let osLang='en';
 function ts(){const d=new Date();let h=d.getHours(),m=d.getMinutes();return(h%12||12)+':'+(m<10?'0':'')+m;}
 function ft(){return new Date().toLocaleTimeString('en-GB',{hour12:false});}
 function ds(){const locales={en:'en-US',ar:'ar-AE',fr:'fr-FR',de:'de-DE',zh:'zh-CN'};return new Date().toLocaleDateString(locales[osLang]||'en-US',{weekday:'long',month:'long',day:'numeric'});}
-function ut(){document.getElementById('sbt').textContent=ts();document.getElementById('lt').textContent=ts();document.getElementById('ld').textContent=ds();}
+function ut(){
+  const time=ts();
+  document.getElementById('sbt').textContent=time;
+  document.getElementById('sbtL').textContent=time;
+  document.getElementById('lt').textContent=time;
+  document.getElementById('ld').textContent=ds();
+}
 setInterval(ut,1000);ut();
 
 // ═══ SETUP WIZARD ═══
@@ -701,21 +721,21 @@ const APPS=[
 const DOCK_IDS=['messages','compass','music'];
 
 const RES=[
-  {name:'iPhone SE (3rd)',w:375,h:667,l:'750×1334 @2x'},
-  {name:'iPhone 8',w:375,h:667,l:'750×1334 @2x'},
-  {name:'iPhone 12 mini',w:375,h:812,l:'1125×2436 @3x'},
-  {name:'iPhone 12/13/14',w:390,h:844,l:'1170×2532 @3x'},
-  {name:'iPhone 13 Pro',w:390,h:844,l:'1170×2532 @3x'},
-  {name:'iPhone 14 Pro',w:393,h:852,l:'1179×2556 @3x'},
-  {name:'iPhone 14 Plus',w:428,h:926,l:'1284×2778 @3x'},
-  {name:'iPhone 15',w:393,h:852,l:'1179×2556 @3x'},
-  {name:'iPhone 15 Pro',w:393,h:852,l:'1179×2556 @3x'},
-  {name:'iPhone 15 Pro Max',w:430,h:932,l:'1290×2796 @3x'},
-  {name:'iPhone 16',w:393,h:852,l:'1179×2556 @3x'},
-  {name:'iPhone 16e',w:375,h:812,l:'1125×2436 @3x'},
-  {name:'iPhone 16 Plus',w:430,h:932,l:'1290×2796 @3x'},
-  {name:'iPhone 16 Pro',w:402,h:874,l:'1206×2622 @3x'},
-  {name:'iPhone 16 Pro Max',w:440,h:956,l:'1320×2868 @3x'},
+  {name:'iPhone SE (3rd)',w:375,h:667,l:'750×1334 @2x',notch:false},
+  {name:'iPhone 8',w:375,h:667,l:'750×1334 @2x',notch:false},
+  {name:'iPhone 12 mini',w:375,h:812,l:'1125×2436 @3x',notch:true},
+  {name:'iPhone 12/13/14',w:390,h:844,l:'1170×2532 @3x',notch:true},
+  {name:'iPhone 13 Pro',w:390,h:844,l:'1170×2532 @3x',notch:true},
+  {name:'iPhone 14 Pro',w:393,h:852,l:'1179×2556 @3x',notch:true,di:true},
+  {name:'iPhone 14 Plus',w:428,h:926,l:'1284×2778 @3x',notch:true},
+  {name:'iPhone 15',w:393,h:852,l:'1179×2556 @3x',notch:true,di:true},
+  {name:'iPhone 15 Pro',w:393,h:852,l:'1179×2556 @3x',notch:true,di:true},
+  {name:'iPhone 15 Pro Max',w:430,h:932,l:'1290×2796 @3x',notch:true,di:true},
+  {name:'iPhone 16',w:393,h:852,l:'1179×2556 @3x',notch:true,di:true},
+  {name:'iPhone 16e',w:375,h:812,l:'1125×2436 @3x',notch:true},
+  {name:'iPhone 16 Plus',w:430,h:932,l:'1290×2796 @3x',notch:true,di:true},
+  {name:'iPhone 16 Pro',w:402,h:874,l:'1206×2622 @3x',notch:true,di:true},
+  {name:'iPhone 16 Pro Max',w:440,h:956,l:'1320×2868 @3x',notch:true,di:true},
 ];
 let curRes=3; // default iPhone 12/13/14
 
@@ -796,50 +816,31 @@ function bSet(c){
   <div class="sg"><div class="sr" style="justify-content:center;color:#8e8e93;font-size:12px;cursor:default">KhahanA OS 1.0 (Build 26A329)</div></div>
   <div style="height:20px"></div>`;
   bRP();
-  // Update battery in settings
-  if(navigator.getBattery)navigator.getBattery().then(b=>{const el=document.getElementById('setBatt');if(el)el.textContent=Math.round(b.level*100)+'%'+(b.charging?' ⚡':'');});
 }
 function bRP(){const p=document.getElementById('rp');if(!p)return;p.innerHTML=RES.map((r,i)=>`<div class="ro${i===curRes?' on':''}" onclick="setR(${i})"><div><span class="rn">${r.name}</span><br><span class="rpx">${r.l} — ${r.w}×${r.h}pt</span></div><span class="rck">✓</span></div>`).join('');}
 function setR(i){
   curRes=i;sndTick();bRP();
-  // ACTUALLY RESIZE THE VIEWPORT
   const r=RES[i];
   document.body.style.width=r.w+'px';
   document.body.style.height=r.h+'px';
-  // Re-init particles for new canvas size
+  applyStatusBarMode();
   setTimeout(()=>{rz();initP();},450);
 }
 
-// ═══ REAL BATTERY LEVEL + CHARGING ═══
-function updateBattery(){
-  if(navigator.getBattery){
-    navigator.getBattery().then(b=>{
-      function refresh(){
-        const pct=Math.round(b.level*100);
-        const battEl=document.getElementById('battPct');
-        if(battEl)battEl.textContent=pct+'%';
-        const bar=document.getElementById('battBar');
-        if(bar){
-          bar.setAttribute('width',Math.round(19*b.level));
-          if(b.charging)bar.setAttribute('fill','#4cd964');
-          else if(pct<=20)bar.setAttribute('fill','#ff3b30');
-          else if(pct<=50)bar.setAttribute('fill','#ffcc00');
-          else bar.setAttribute('fill','#4cd964');
-        }
-        // Charging bolt
-        const bolt=document.getElementById('chargeBolt');
-        if(bolt){
-          if(b.charging)bolt.classList.add('on');
-          else bolt.classList.remove('on');
-        }
-      }
-      refresh();
-      b.addEventListener('levelchange',refresh);
-      b.addEventListener('chargingchange',refresh);
-    });
+// ═══ STATUS BAR MODE ═══
+function applyStatusBarMode(){
+  const sb=document.getElementById('sb');
+  const res=RES[curRes];
+  if(res&&res.notch){
+    sb.classList.add('modern');
+    document.documentElement.style.setProperty('--sb','54px');
+  }else{
+    sb.classList.remove('modern');
+    document.documentElement.style.setProperty('--sb','24px');
   }
 }
-updateBattery();
+// Apply on load based on default res
+applyStatusBarMode();
 
 // ═══ DEVICE MODEL DETECTION ═══
 function detectDevice(){
