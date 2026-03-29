@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="90" fill="#000"/>
+  <circle cx="256" cy="256" r="180" fill="none" stroke="#00D4AA" stroke-width="6" opacity="0.5"/>
+  <circle cx="256" cy="256" r="120" fill="none" stroke="#00D4AA" stroke-width="3" opacity="0.3"/>
+  <text x="256" y="225" text-anchor="middle" font-size="60" fill="rgba(255,255,255,0.8)" font-weight="300" font-family="Helvetica,sans-serif">KhahanA</text>
+  <text x="256" y="290" text-anchor="middle" font-size="90" fill="#00D4AA" font-weight="800" font-family="Helvetica,sans-serif">OS</text>
+  <text x="256" y="330" text-anchor="middle" font-size="35" fill="rgba(255,255,255,0.4)" font-weight="200" font-family="Helvetica,sans-serif">1.0</text>
+</svg>

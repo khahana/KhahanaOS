@@ -1,0 +1,22 @@
+{
+  "name": "KhahanA OS 1.0",
+  "short_name": "KhahanA OS",
+  "description": "Intelligence Amplified. Experience Transformed.",
+  "start_url": "/os/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#00D4AA",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

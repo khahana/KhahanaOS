@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>KhahanA OS 1.0</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#000000">
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@100;200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;}
+html{background:#000;width:100%;height:100%;overflow:hidden;display:flex;justify-content:center;align-items:center;}
+body{
+  width:390px;height:844px;
+  overflow:hidden;background:#000;
+  font-family:'Overpass','Helvetica Neue',sans-serif;
+  position:relative;
+  border-radius:0;
+  transition:width 0.4s ease,height 0.4s ease;
+}
+@media (max-width:430px){
+  body{width:100%!important;height:100%!important;}
+  html{align-items:stretch;}
+}
+:root{--sb:24px;--bot:8px;--accent:#00D4AA;}
+canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+
+/* ═══ STATUS BAR ═══ */
+.sb{position:absolute;top:0;left:0;right:0;height:var(--sb);display:none;align-items:center;justify-content:space-between;padding:0 14px;z-index:9999;font-size:11px;font-weight:600;color:#fff;letter-spacing:0.2px;}
+.sb.vis{display:flex;}
+.sb-l{display:flex;align-items:center;gap:3px;}
+.sb-c{position:absolute;left:50%;transform:translateX(-50%);font-weight:700;font-size:11px;}
+.sb-r{display:flex;align-items:center;gap:4px;font-size:10px;}
+.sb-charge{display:none;margin-left:-2px;}
+.sb-charge.on{display:inline;}
+.sb-charge svg{width:8px;height:12px;fill:#4cd964;vertical-align:middle;}
+.dots{display:flex;gap:1.5px;}.dots div{width:3px;border-radius:1px;background:#fff;}
+
+/* ═══ SETUP WIZARD ═══ */
+.setup{position:absolute;inset:0;z-index:9500;display:flex;flex-direction:column;background:#000;color:#fff;transition:opacity 0.5s;}
+.setup.off{opacity:0;pointer-events:none;}
+.setup-page{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 30px;text-align:center;transition:opacity 0.4s,transform 0.4s;}
+.setup-page.active{display:flex;}
+.setup-page.leaving{opacity:0;transform:translateX(-60px);}
+.setup-hello{font-size:52px;font-weight:100;letter-spacing:-1px;margin-bottom:6px;background:linear-gradient(135deg,#fff,var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.setup-sub{font-size:16px;font-weight:300;opacity:0.6;line-height:1.5;}
+.setup-logo{width:80px;height:80px;margin-bottom:24px;opacity:0.9;}
+.setup-title{font-size:26px;font-weight:700;margin-bottom:8px;}
+.setup-desc{font-size:14px;font-weight:300;opacity:0.5;line-height:1.6;max-width:280px;}
+.setup-btn{
+  margin-top:32px;padding:14px 48px;
+  background:var(--accent);color:#000;
+  border:none;border-radius:28px;font-size:16px;font-weight:700;
+  cursor:pointer;font-family:inherit;letter-spacing:0.3px;
+  transition:transform 0.15s,box-shadow 0.15s;
+}
+.setup-btn:active{transform:scale(0.95);}
+.setup-btn.outline{background:none;border:2px solid var(--accent);color:var(--accent);}
+.setup-opts{display:flex;flex-direction:column;gap:8px;width:100%;max-width:280px;margin-top:20px;}
+.setup-opt{
+  padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;font-size:14px;cursor:pointer;text-align:left;
+  transition:border-color 0.15s,background 0.15s;display:flex;align-items:center;justify-content:space-between;
+}
+.setup-opt:hover,.setup-opt.sel{border-color:var(--accent);background:rgba(0,212,170,0.08);}
+.setup-opt .chk{width:20px;height:20px;border:2px solid rgba(255,255,255,0.2);border-radius:50%;transition:all 0.15s;display:flex;align-items:center;justify-content:center;}
+.setup-opt.sel .chk{border-color:var(--accent);background:var(--accent);}
+.setup-opt.sel .chk::after{content:'✓';font-size:11px;color:#000;font-weight:800;}
+.setup-input{
+  width:100%;max-width:280px;margin-top:16px;padding:12px 16px;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;color:#fff;font-size:14px;font-family:inherit;outline:none;
+  -webkit-user-select:text;user-select:text;
+}
+.setup-input::placeholder{color:rgba(255,255,255,0.25);}
+.setup-input:focus{border-color:var(--accent);}
+.setup-dots{position:absolute;bottom:40px;display:flex;gap:6px;}
+.setup-dots .sd{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.15);transition:background 0.3s;}
+.setup-dots .sd.on{background:var(--accent);}
+
+/* ═══ BOOT ═══ */
+.boot{position:absolute;inset:0;z-index:10000;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:opacity 0.8s;}
+.boot.off{opacity:0;pointer-events:none;}
+.boot-logo{opacity:0;animation:bootUp 1s ease 0.3s forwards;}
+@keyframes bootUp{to{opacity:0.9;transform:translateY(-3px);}}
+.boot-bar-w{width:130px;height:2px;background:#111;border-radius:2px;margin-top:24px;overflow:hidden;opacity:0;animation:bootUp 0.5s ease 1s forwards;}
+.boot-bar{height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width 0.15s;opacity:0.7;}
+
+/* ═══ LOCK ═══ */
+.lock{position:absolute;inset:0;z-index:5000;display:flex;flex-direction:column;align-items:center;transition:opacity 0.4s,transform 0.4s;}
+.lock.off{opacity:0;transform:translateY(-100%);pointer-events:none;}
+.lock-time{font-size:68px;font-weight:100;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,0.3);line-height:1;letter-spacing:-2px;margin-top:calc(var(--sb) + 44px);position:relative;z-index:2;}
+.lock-date{font-size:17px;font-weight:300;color:rgba(255,255,255,0.75);margin-top:6px;position:relative;z-index:2;}
+.lock-bottom{position:absolute;bottom:calc(var(--bot) + 20px);width:100%;display:flex;flex-direction:column;align-items:center;z-index:2;}
+.slide-t{width:240px;height:42px;background:rgba(255,255,255,0.06);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-radius:21px;border:1px solid rgba(255,255,255,0.08);position:relative;overflow:hidden;cursor:pointer;}
+.slide-lbl{position:absolute;width:100%;text-align:center;line-height:42px;color:rgba(255,255,255,0.45);font-size:15px;font-weight:300;letter-spacing:2px;animation:shimmer 2.5s ease-in-out infinite;}
+@keyframes shimmer{0%,100%{opacity:0.25;}50%{opacity:0.7;}}
+.slide-k{position:absolute;left:3px;top:3px;width:36px;height:36px;background:linear-gradient(180deg,#f0f0f0,#c8c8c8);border-radius:50%;display:flex;justify-content:center;align-items:center;box-shadow:0 2px 6px rgba(0,0,0,0.35);transition:left 0.2s;z-index:2;}
+.slide-k svg{width:13px;height:13px;}
+
+/* ═══ HOME ═══ */
+.home{position:absolute;inset:0;z-index:1000;display:none;flex-direction:column;}
+.home.on{display:flex;}
+.home-grid{position:relative;z-index:2;flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:18px 0;padding:calc(var(--sb) + 14px) 18px 6px;align-content:start;}
+.ai{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;position:relative;}
+.ai:active .aib{transform:scale(0.85);}
+.aib{width:54px;height:54px;border-radius:13px;display:flex;justify-content:center;align-items:center;position:relative;overflow:hidden;transition:transform 0.1s;box-shadow:0 2px 8px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.2);}
+.aib::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,0.35),rgba(255,255,255,0.04));border-radius:13px 13px 0 0;pointer-events:none;}
+.aib svg{position:relative;z-index:1;}
+.an{font-size:10px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.7);font-weight:500;text-align:center;}
+.badge{position:absolute;top:-3px;right:4px;min-width:17px;height:17px;padding:0 4px;background:#ff3b30;color:#fff;border-radius:9px;font-size:10px;font-weight:700;display:flex;justify-content:center;align-items:center;z-index:3;}
+.pdots{position:relative;z-index:2;display:flex;justify-content:center;gap:5px;padding:6px 0;}
+.pd{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,0.25);}
+.pd.on{background:#fff;}
+.dock{position:relative;z-index:3;height:84px;background:rgba(255,255,255,0.04);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid rgba(255,255,255,0.04);display:flex;justify-content:center;align-items:center;gap:18px;padding-bottom:var(--bot);}
+
+/* ═══ QUICK PEEK ═══ */
+.peek{position:absolute;z-index:8000;width:240px;padding:12px 14px;background:rgba(20,20,20,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-radius:14px;border:1px solid rgba(0,212,170,0.15);color:#fff;font-size:12.5px;box-shadow:0 10px 35px rgba(0,0,0,0.5);display:none;animation:peekIn 0.15s ease-out;pointer-events:none;}
+.peek.on{display:block;}
+@keyframes peekIn{from{opacity:0;transform:scale(0.92);}to{opacity:1;transform:scale(1);}}
+.peek-title{font-weight:700;font-size:13px;margin-bottom:6px;color:var(--accent);}
+.peek-body{line-height:1.45;opacity:0.7;}
+
+/* ═══ CONTROL CENTER ═══ */
+.cc{position:absolute;bottom:0;left:0;right:0;z-index:8500;height:0;overflow:hidden;background:rgba(10,10,10,0.94);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:18px 18px 0 0;transition:height 0.35s cubic-bezier(0.32,0.72,0,1);}
+.cc.open{height:340px;}
+.cc-handle{width:34px;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;margin:8px auto 14px;}
+.cc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0 14px;}
+.cc-tile{background:rgba(255,255,255,0.06);border-radius:12px;padding:12px;cursor:pointer;transition:background 0.15s;}
+.cc-tile:active{background:rgba(255,255,255,0.12);}
+.cc-tile.active{background:rgba(0,212,170,0.2);border:1px solid rgba(0,212,170,0.3);}
+.cc-icon svg{width:18px;height:18px;fill:#fff;}
+.cc-label{font-size:11px;color:rgba(255,255,255,0.6);font-weight:500;margin-top:5px;}
+.cc-val{font-size:9px;color:rgba(255,255,255,0.3);margin-top:2px;}
+.cc-slider-row{padding:12px 14px 0;display:flex;align-items:center;gap:8px;}
+.cc-slider-row svg{width:12px;height:12px;fill:rgba(255,255,255,0.3);}
+.cc-slider{flex:1;height:26px;background:rgba(255,255,255,0.06);border-radius:13px;position:relative;overflow:hidden;cursor:pointer;}
+.cc-slider-fill{height:100%;background:rgba(0,212,170,0.3);border-radius:13px;transition:width 0.15s;}
+.cc-zone{position:absolute;bottom:0;left:0;right:0;height:16px;z-index:8499;cursor:pointer;}
+
+/* ═══ NOTIFICATION CENTER ═══ */
+.nc{position:absolute;top:0;left:0;right:0;z-index:8500;height:0;overflow:hidden;background:rgba(10,10,10,0.92);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border-radius:0 0 18px 18px;transition:height 0.35s cubic-bezier(0.32,0.72,0,1);}
+.nc.open{height:380px;}
+.nc-header{padding:calc(var(--sb) + 8px) 14px 8px;display:flex;justify-content:space-between;align-items:center;}
+.nc-title{font-size:24px;font-weight:800;color:#fff;}
+.nc-clear{font-size:12px;color:var(--accent);cursor:pointer;font-weight:600;}
+.nc-list{padding:0 14px;overflow-y:auto;max-height:280px;}
+.nc-card{background:rgba(255,255,255,0.05);border-radius:12px;padding:10px 12px;margin-bottom:6px;display:flex;gap:8px;}
+.nc-card-ic{width:30px;height:30px;border-radius:8px;display:flex;justify-content:center;align-items:center;flex-shrink:0;}
+.nc-card-ic svg{width:16px;height:16px;fill:#fff;}
+.nc-card-body{flex:1;}
+.nc-card-app{font-size:10px;color:rgba(255,255,255,0.35);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.nc-card-msg{font-size:13px;color:#fff;margin-top:2px;line-height:1.35;}
+.nc-card-time{font-size:10px;color:rgba(255,255,255,0.25);margin-top:2px;}
+.nc-zone{position:absolute;top:0;left:0;right:0;height:16px;z-index:8499;cursor:pointer;}
+
+/* ═══ APP SCREENS ═══ */
+.as{position:absolute;inset:0;z-index:6000;display:none;flex-direction:column;background:#e5e5ea;animation:appIn 0.25s ease-out;}
+.as.open{display:flex;}
+@keyframes appIn{from{transform:translateX(100%);}to{transform:none;}}
+.ab{height:44px;margin-top:var(--sb);flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;border-bottom:1px solid rgba(0,0,0,0.2);box-shadow:inset 0 1px 0 rgba(255,255,255,0.1);}
+.ab .t{color:#fff;font-size:17px;font-weight:700;text-shadow:0 -1px 0 rgba(0,0,0,0.3);}
+.bk{position:absolute;left:6px;top:0;height:100%;display:flex;align-items:center;gap:1px;background:none;border:none;color:rgba(255,255,255,0.9);font-size:12px;font-weight:500;cursor:pointer;padding:0 6px;font-family:inherit;}
+.bk svg{width:9px;height:16px;fill:none;stroke:rgba(255,255,255,0.9);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.ac{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;}
+.ac::-webkit-scrollbar{width:0;}
+
+/* WEATHER */
+.w-bg{background:linear-gradient(180deg,#4a90d9,#6bb3f0,#87ceeb)!important;color:#fff;}
+.w-city{font-size:26px;font-weight:200;text-align:center;padding-top:14px;}
+.w-temp{font-size:80px;font-weight:100;text-align:center;line-height:1;letter-spacing:-3px;}
+.w-cond{text-align:center;font-size:16px;font-weight:300;opacity:0.85;}
+.w-hl{text-align:center;font-size:14px;opacity:0.65;margin-top:2px;}
+.w-hrs{display:flex;overflow-x:auto;padding:12px 6px;border-top:1px solid rgba(255,255,255,0.15);border-bottom:1px solid rgba(255,255,255,0.15);margin-top:14px;scrollbar-width:none;}
+.w-hrs::-webkit-scrollbar{display:none;}
+.w-h{flex:0 0 56px;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;}
+.w-h .ht{font-size:15px;font-weight:500;}
+.w-wk{padding:2px 14px 20px;}
+.w-d{display:flex;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:14px;}
+.w-d .dn{width:70px;font-weight:500;}
+.w-d .di{flex:1;text-align:center;font-size:17px;}
+.w-d .dt{display:flex;gap:10px;}
+.w-d .lo{opacity:0.5;}
+
+/* CALCULATOR */
+.calc-w{display:flex;flex-direction:column;height:100%;background:#000!important;}
+.calc-d{flex:0 0 auto;min-height:80px;display:flex;align-items:flex-end;justify-content:flex-end;padding:8px 14px;font-size:44px;font-weight:200;color:#fff;overflow:hidden;}
+.calc-g{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;}
+.cb{display:flex;justify-content:center;align-items:center;font-size:22px;border:none;cursor:pointer;color:#fff;font-family:inherit;font-weight:300;transition:filter 0.08s;}
+.cb:active{filter:brightness(1.4);}
+.cb.n{background:#333;}
+.cb.o{background:var(--accent);color:#000;font-weight:600;}
+.cb.o.sel{background:#fff;color:var(--accent);}
+.cb.f{background:#a5a5a5;color:#000;font-weight:500;}
+.cb.z{grid-column:span 2;justify-content:flex-start;padding-left:22px;}
+
+/* CLOCK */
+.clk-w{background:#0a0a0a!important;display:flex;flex-direction:column;align-items:center;padding-top:24px;color:#fff;}
+.cf{width:170px;height:170px;border:2px solid rgba(0,212,170,0.4);border-radius:50%;position:relative;background:rgba(0,0,0,0.4);}
+.cdot{position:absolute;top:50%;left:50%;width:7px;height:7px;background:var(--accent);border-radius:50%;transform:translate(-50%,-50%);z-index:5;}
+.ch{position:absolute;bottom:50%;left:50%;transform-origin:bottom center;border-radius:2px;}
+.chh{width:3px;height:40px;background:#fff;margin-left:-1.5px;}
+.chm{width:2px;height:55px;background:#fff;margin-left:-1px;}
+.chs{width:1px;height:62px;background:var(--accent);margin-left:-0.5px;}
+.clk-digi{margin-top:20px;font-size:40px;font-weight:100;font-variant-numeric:tabular-nums;}
+.sw-r{display:flex;gap:18px;margin-top:16px;}
+.swb{width:56px;height:56px;border-radius:50%;border:2px solid;background:none;font-size:10px;font-weight:600;cursor:pointer;font-family:inherit;}
+.swb.go{border-color:var(--accent);color:var(--accent);}
+.swb.st{border-color:#ff3b30;color:#ff3b30;}
+.swb.rs{border-color:#666;color:#666;}
+
+/* NOTES */
+.notes-w{min-height:100%;background:linear-gradient(180deg,#d4a843 0%,#c49a38 4px,transparent 4px),repeating-linear-gradient(transparent,transparent 27px,#c4d4b0 27px,#c4d4b0 28px),#fffde7;padding:12px 16px;}
+.notes-w textarea{width:100%;min-height:500px;background:none;border:none;outline:none;resize:none;font-family:'Overpass',sans-serif;font-size:14px;line-height:28px;color:#2a2a2a;-webkit-user-select:text;user-select:text;}
+
+/* MESSAGES */
+.msg-w{display:flex;flex-direction:column;height:100%;background:#e5e5ea!important;}
+.msg-l{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:4px;}
+.bu{max-width:78%;padding:8px 12px;border-radius:16px;font-size:14px;line-height:1.4;animation:bubIn 0.18s ease-out;}
+@keyframes bubIn{from{opacity:0;transform:translateY(5px);}to{opacity:1;}}
+.bu.s{background:var(--accent);color:#000;align-self:flex-end;border-bottom-right-radius:4px;font-weight:500;}
+.bu.r{background:#fff;color:#111;align-self:flex-start;border-bottom-left-radius:4px;box-shadow:0 0.5px 1px rgba(0,0,0,0.06);}
+.bu .bt{font-size:9px;opacity:0.45;margin-top:2px;display:block;text-align:right;}
+.msg-b{display:flex;gap:5px;padding:6px 8px;background:#f7f7f8;border-top:0.5px solid #c8c8cc;flex-shrink:0;}
+.msg-b input{flex:1;padding:8px 12px;border:1px solid #d1d1d6;border-radius:18px;font-size:13px;outline:none;background:#fff;font-family:inherit;-webkit-user-select:text;user-select:text;}
+.msg-b button{background:var(--accent);color:#000;border:none;border-radius:18px;padding:8px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+
+/* MUSIC */
+.mus-w{background:linear-gradient(180deg,#0a0a0a,#111,#0a0a0a)!important;display:flex;flex-direction:column;align-items:center;padding:20px;color:#fff;}
+.alb{width:190px;height:190px;border-radius:10px;background:conic-gradient(from 45deg,var(--accent),#1B3A5C,var(--accent),#1B3A5C,var(--accent));box-shadow:0 10px 35px rgba(0,212,170,0.15);display:flex;justify-content:center;align-items:center;}
+.alb.spin{animation:disc 3s linear infinite;}
+@keyframes disc{to{transform:rotate(360deg);}}
+.alb::after{content:'';width:34px;height:34px;border-radius:50%;background:radial-gradient(circle,#0a0a0a 30%,rgba(0,212,170,0.1) 100%);}
+.mt{font-size:17px;font-weight:700;margin-top:18px;}
+.ma{font-size:12px;font-weight:300;opacity:0.45;margin-top:3px;}
+.mpb{width:100%;height:3px;background:rgba(255,255,255,0.08);border-radius:2px;margin-top:18px;overflow:hidden;}
+.mpf{height:100%;width:0%;background:var(--accent);border-radius:2px;transition:width 0.3s;}
+.mts{display:flex;justify-content:space-between;width:100%;font-size:10px;opacity:0.3;margin-top:4px;font-variant-numeric:tabular-nums;}
+.mc{display:flex;align-items:center;gap:28px;margin-top:14px;}
+.mc button{background:none;border:none;cursor:pointer;}
+.mc svg{fill:#fff;}
+.mc-p svg{width:40px;height:40px;}
+.mc-s svg{width:24px;height:24px;}
+
+/* SAFARI */
+.saf-w{display:flex;flex-direction:column;height:100%;background:#fff!important;}
+.saf-url{padding:6px 10px;background:#f2f2f7;border-bottom:0.5px solid #c8c8cc;flex-shrink:0;}
+.saf-url input{width:100%;padding:7px 12px;border:1px solid #d8d8dc;border-radius:10px;font-size:13px;text-align:center;background:#fff;outline:none;font-family:inherit;color:#333;-webkit-user-select:text;user-select:text;}
+.saf-m{flex:1;overflow-y:auto;padding:18px 12px;}
+.saf-ft{text-align:center;color:#8e8e93;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;}
+.saf-g{display:grid;grid-template-columns:repeat(4,1fr);gap:14px 4px;}
+.saf-f{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;}
+.saf-fi{width:48px;height:48px;border-radius:11px;display:flex;justify-content:center;align-items:center;font-size:10px;font-weight:800;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.saf-f span{font-size:9px;color:#555;font-weight:500;}
+
+/* MAPS */
+.map-w{position:relative;height:100%;overflow:hidden;}
+.map-c{position:absolute;inset:0;background:radial-gradient(ellipse at 40% 50%,#d4e4c1,transparent 60%),#c8d7a3;}
+.map-gl{position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,0.02) 1px,transparent 1px),linear-gradient(rgba(0,0,0,0.02) 1px,transparent 1px);background-size:45px 45px;}
+.map-rd{position:absolute;background:#f0ead6;border:0.5px solid #d4c9a8;}
+.map-pin{position:absolute;top:48%;left:50%;transform:translate(-50%,-100%);z-index:5;}
+.map-pin svg{width:28px;height:38px;}
+.map-lbl{position:absolute;top:50%;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.9);padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,0.1);white-space:nowrap;z-index:5;}
+
+/* PHOTOS */
+.pho-w{background:#fff!important;}
+.pho-t{display:flex;border-bottom:0.5px solid #d1d1d6;background:#f9f9f9;flex-shrink:0;}
+.pho-tb{flex:1;text-align:center;padding:8px;font-size:10px;font-weight:600;color:#8e8e93;cursor:pointer;border-bottom:2px solid transparent;}
+.pho-tb.on{color:var(--accent);border-bottom-color:var(--accent);}
+.pho-g{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;padding:2px;}
+.pho-i{aspect-ratio:1;cursor:pointer;}
+
+/* SETTINGS */
+.set-w{background:#efeff4!important;}
+.sg{background:#fff;margin:12px 12px 0;border-radius:11px;overflow:hidden;}
+.sgt{font-size:10px;font-weight:600;color:#6d6d72;text-transform:uppercase;letter-spacing:0.5px;padding:16px 24px 4px;}
+.sr{display:flex;align-items:center;padding:9px 12px;font-size:14px;border-bottom:0.5px solid #e8e8ea;cursor:pointer;}
+.sr:last-child{border-bottom:none;}
+.sr-i{width:26px;height:26px;border-radius:6px;display:flex;justify-content:center;align-items:center;margin-right:10px;flex-shrink:0;}
+.sr-i svg{width:15px;height:15px;fill:#fff;}
+.sr-l{flex:1;font-weight:400;}
+.sr-v{color:#8e8e93;font-size:12px;margin-right:4px;}
+.sr-a{color:#c7c7cc;font-size:16px;}
+.tg{width:44px;height:26px;background:#e9e9ea;border-radius:13px;position:relative;cursor:pointer;transition:background 0.25s;flex-shrink:0;}
+.tg.on{background:var(--accent);}
+.tg::after{content:'';width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:2px;left:2px;transition:left 0.25s;box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.tg.on::after{left:20px;}
+.rp{margin:4px 12px 14px;}
+.ro{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#fff;border-bottom:0.5px solid #e8e8ea;cursor:pointer;font-size:13px;}
+.ro:first-child{border-radius:11px 11px 0 0;}
+.ro:last-child{border-radius:0 0 11px 11px;border-bottom:none;}
+.ro .rn{font-weight:500;font-size:13px;}
+.ro .rpx{color:#8e8e93;font-size:11px;}
+.ro .rck{color:var(--accent);font-size:15px;font-weight:700;opacity:0;transition:opacity 0.12s;}
+.ro.on .rck{opacity:1;}
+/* SEARCH / SPOTLIGHT */
+.search-panel{position:absolute;inset:0;z-index:4500;background:rgba(0,0,0,0.85);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);display:none;flex-direction:column;padding:calc(var(--sb) + 10px) 16px 20px;transform:translateX(-100%);transition:transform 0.3s ease;}
+.search-panel.open{display:flex;transform:translateX(0);}
+.search-bar{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:10px 14px;margin-bottom:16px;}
+.search-bar svg{width:16px;height:16px;fill:rgba(255,255,255,0.3);flex-shrink:0;}
+.search-bar input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:15px;font-family:inherit;-webkit-user-select:text;user-select:text;}
+.search-bar input::placeholder{color:rgba(255,255,255,0.2);}
+.search-section{margin-bottom:16px;}
+.search-section-title{font-size:11px;font-weight:700;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;}
+.search-suggestions{display:flex;flex-direction:column;gap:2px;}
+.search-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background 0.12s;color:#fff;font-size:14px;}
+.search-item:active{background:rgba(255,255,255,0.08);}
+.search-item-ic{width:28px;height:28px;border-radius:7px;display:flex;justify-content:center;align-items:center;flex-shrink:0;}
+.search-item-ic svg{width:15px;height:15px;fill:#fff;}
+.search-cancel{position:absolute;top:calc(var(--sb) + 14px);right:16px;background:none;border:none;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;z-index:2;}
+#flash{position:absolute;inset:0;background:#fff;z-index:99999;display:none;}
+</style>
+</head>
+<body>
+<canvas id="pBg"></canvas>
+
+<!-- STATUS BAR -->
+<div class="sb" id="sb">
+  <div class="sb-l"><div class="dots"><div style="height:4px"></div><div style="height:6px"></div><div style="height:8px"></div><div style="height:10px"></div><div style="height:12px;opacity:0.3"></div></div><span style="font-size:10px;margin-left:2px;font-weight:500">KhahanA</span></div>
+  <div class="sb-c" id="sbt"></div>
+  <div class="sb-r"><span id="battPct">100%</span><span class="sb-charge" id="chargeBolt"><svg viewBox="0 0 12 20"><path d="M7 0L2 10h4L4 20l6-12H6L8 0z" fill="#4cd964"/></svg></span><svg viewBox="0 0 28 13" width="18" height="9"><rect x="0" y="1.5" width="23" height="10" rx="2.5" stroke="#fff" stroke-width="1" fill="none"/><rect x="24" y="4" width="2.5" height="5" rx="1" fill="#fff" opacity="0.4"/><rect x="2" y="3.5" width="19" height="6" rx="1" fill="#4cd964" id="battBar"/></svg></div>
+</div>
+
+<!-- SETUP WIZARD -->
+<div class="setup off" id="setup">
+  <!-- Page 0: Hello -->
+  <div class="setup-page" id="sp0">
+    <div class="setup-hello">Hello.</div>
+    <div class="setup-sub">Welcome to KhahanA OS</div>
+    <button class="setup-btn" onclick="nextSetup()">Get Started</button>
+    <div class="setup-dots"><div class="sd on"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div></div>
+  </div>
+  <!-- Page 1: Language -->
+  <div class="setup-page" id="sp1">
+    <div class="setup-title">Language</div>
+    <div class="setup-desc">Choose your preferred language</div>
+    <div class="setup-opts" id="langOpts"></div>
+    <button class="setup-btn" onclick="nextSetup()" style="margin-top:20px">Continue</button>
+    <div class="setup-dots"><div class="sd"></div><div class="sd on"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div></div>
+  </div>
+  <!-- Page 2: Wi-Fi -->
+  <div class="setup-page" id="sp2">
+    <svg class="setup-logo" viewBox="0 0 80 80"><path d="M40 60a3 3 0 110 6 3 3 0 010-6z" fill="rgba(0,212,170,0.9)"/><path d="M25 48a20 20 0 0130 0M15 38a32 32 0 0150 0M5 28a45 45 0 0170 0" fill="none" stroke="rgba(0,212,170,0.6)" stroke-width="3" stroke-linecap="round"/></svg>
+    <div class="setup-title">Connect to Wi-Fi</div>
+    <div class="setup-opts">
+      <div class="setup-opt sel" onclick="selOpt(this)"><span>KhahanA-5G</span><span class="chk"></span></div>
+      <div class="setup-opt" onclick="selOpt(this)"><span>RESIDENTS_WIFI</span><span class="chk"></span></div>
+      <div class="setup-opt" onclick="selOpt(this)"><span>du-guest</span><span class="chk"></span></div>
+    </div>
+    <button class="setup-btn" onclick="nextSetup()" style="margin-top:20px">Join Network</button>
+    <div class="setup-dots"><div class="sd"></div><div class="sd"></div><div class="sd on"></div><div class="sd"></div><div class="sd"></div></div>
+  </div>
+  <!-- Page 3: KhahanA ID -->
+  <div class="setup-page" id="sp3">
+    <svg class="setup-logo" viewBox="0 0 80 80"><circle cx="40" cy="30" r="14" fill="none" stroke="rgba(0,212,170,0.7)" stroke-width="2.5"/><path d="M16 65a24 24 0 0148 0" fill="none" stroke="rgba(0,212,170,0.5)" stroke-width="2.5" stroke-linecap="round"/></svg>
+    <div class="setup-title">KhahanA ID</div>
+    <div class="setup-desc">Sign in with your KhahanA ID to access all services</div>
+    <input class="setup-input" id="kidEmail" placeholder="Email or username" type="text">
+    <input class="setup-input" id="kidPass" placeholder="Password" type="password" style="margin-top:8px">
+    <button class="setup-btn" onclick="signInKID()" style="margin-top:20px">Sign In</button>
+    <div style="margin-top:10px;font-size:12px;opacity:0.35;cursor:pointer" onclick="skipKID()">Skip for now</div>
+    <div class="setup-dots"><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd on"></div><div class="sd"></div></div>
+  </div>
+  <!-- Page 4: Ready -->
+  <div class="setup-page" id="sp4">
+    <svg class="setup-logo" viewBox="0 0 80 80">
+      <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(0,212,170,0.6)" stroke-width="1.5"/>
+      <text x="40" y="35" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.7)" font-weight="300" font-family="Overpass,sans-serif">KhahanA</text>
+      <text x="40" y="48" text-anchor="middle" font-size="16" fill="rgba(0,212,170,0.9)" font-weight="800" font-family="Overpass,sans-serif">OS</text>
+    </svg>
+    <div class="setup-title">You're All Set</div>
+    <div class="setup-desc">Intelligence amplified. Experience transformed. Welcome to KhahanA OS 1.0</div>
+    <div id="setupModel" style="margin-top:16px;padding:10px 20px;background:rgba(255,255,255,0.04);border:1px solid rgba(0,212,170,0.15);border-radius:12px;font-size:12px;color:rgba(255,255,255,0.4);text-align:center;line-height:1.6;"></div>
+    <button class="setup-btn" onclick="finishSetup()">Start Using KhahanA OS</button>
+    <div class="setup-dots"><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd on"></div></div>
+  </div>
+</div>
+
+<!-- BOOT -->
+<div class="boot" id="boot">
+  <svg class="boot-logo" width="65" height="65" viewBox="0 0 80 80">
+    <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(0,212,170,0.5)" stroke-width="1.2"/>
+    <text x="40" y="33" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)" font-weight="300" font-family="Overpass,sans-serif">KhahanA</text>
+    <text x="40" y="48" text-anchor="middle" font-size="18" fill="rgba(0,212,170,0.85)" font-weight="800" font-family="Overpass,sans-serif">OS</text>
+    <text x="40" y="60" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-weight="200" font-family="Overpass,sans-serif">1.0</text>
+  </svg>
+  <div class="boot-bar-w"><div class="boot-bar" id="bb"></div></div>
+</div>
+
+<!-- LOCK -->
+<div class="lock off" id="lock">
+  <div class="lock-time" id="lt">9:41</div>
+  <div class="lock-date" id="ld">Saturday, March 28</div>
+  <div class="lock-bottom">
+    <div class="slide-t" id="slt"><div class="slide-lbl">slide to unlock</div><div class="slide-k" id="slk"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="#555" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div></div>
+  </div>
+</div>
+
+<!-- HOME -->
+<div class="home" id="home">
+  <div class="home-grid" id="grid"></div>
+  <div class="pdots"><div class="pd"></div><div class="pd on"></div></div>
+  <div class="dock" id="dock"></div>
+</div>
+
+<!-- SEARCH / SPOTLIGHT -->
+<div class="search-panel" id="searchPanel">
+  <button class="search-cancel" onclick="closeSearch()">Cancel</button>
+  <div class="search-bar">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <input type="text" id="searchInput" placeholder="Search apps, settings, and more..." oninput="filterSearch(this.value)">
+  </div>
+  <div class="search-section">
+    <div class="search-section-title">Siri Suggestions</div>
+    <div class="search-suggestions" id="searchResults"></div>
+  </div>
+</div>
+
+<div class="peek" id="peek"><div class="peek-title"></div><div class="peek-body"></div></div>
+<div class="cc-zone" id="ccZ"></div>
+<div class="cc" id="cc">
+  <div class="cc-handle"></div>
+  <div class="cc-grid">
+    <div class="cc-tile active" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><div class="cc-label">${t("wifi")}</div><div class="cc-val">KhahanA-5G</div></div>
+    <div class="cc-tile active" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">${t("bluetooth")}</div><div class="cc-val">On</div></div>
+    <div class="cc-tile" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8l-8-4.5L5 8v8l8 4.5z" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">Airplane</div><div class="cc-val">Off</div></div>
+    <div class="cc-tile" id="ccF" onclick="toggleFlash()"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">Flashlight</div><div class="cc-val">Off</div></div>
+  </div>
+  <div class="cc-slider-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/></svg><div class="cc-slider" onclick="ccSl(event,this)"><div class="cc-slider-fill" style="width:70%"></div></div><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="currentColor"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4" stroke="currentColor" stroke-width="1.5" fill="none"/></svg></div>
+  <div class="cc-slider-row"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/></svg><div class="cc-slider" onclick="ccSl(event,this)"><div class="cc-slider-fill" style="width:55%"></div></div><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.54 8.46a5 5 0 010 7.07" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>
+</div>
+
+<div class="nc-zone" id="ncZ"></div>
+<div class="nc" id="nc">
+  <div class="nc-header"><div class="nc-title">Notifications</div><div class="nc-clear" onclick="clrN()">Clear All</div></div>
+  <div class="nc-list" id="ncL"></div>
+</div>
+
+<div id="flash"></div>
+
+<script>
+// ═══ PARTICLES ═══
+const cvs=document.getElementById('pBg'),ctx=cvs.getContext('2d');
+let W,H,pts=[];
+function rz(){W=cvs.width=cvs.offsetWidth;H=cvs.height=cvs.offsetHeight;}
+window.addEventListener('resize',rz);rz();
+let tX=-1,tY=-1;
+function initP(){pts=[];for(let i=0;i<45;i++)pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,r:Math.random()*1.5+0.3,a:Math.random()*0.3+0.05});}
+initP();
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  const mc={r:8,g:12,b:18};
+  const g=ctx.createRadialGradient(W*0.3,H*0.8,0,W*0.5,H*0.5,H);
+  g.addColorStop(0,`rgba(${mc.r+5},${mc.g+8},${mc.b+12},0.12)`);
+  g.addColorStop(1,`rgba(${mc.r},${mc.g},${mc.b},0.03)`);
+  ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+  pts.forEach(p=>{
+    if(tX>=0){const dx=p.x-tX,dy=p.y-tY,d=Math.sqrt(dx*dx+dy*dy);if(d<100){const f=(100-d)/100*0.6;p.vx+=dx/d*f;p.vy+=dy/d*f;}}
+    p.x+=p.vx;p.y+=p.vy;p.vx*=0.98;p.vy*=0.98;p.vx+=(Math.random()-0.5)*0.04;p.vy+=(Math.random()-0.5)*0.04;
+    if(p.x<0)p.x=W;if(p.x>W)p.x=0;if(p.y<0)p.y=H;if(p.y>H)p.y=0;
+    ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(0,212,170,${p.a})`;ctx.fill();
+  });
+  for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=dx*dx+dy*dy;if(d<6000){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle=`rgba(0,212,170,${0.04*(1-d/6000)})`;ctx.stroke();}}
+  requestAnimationFrame(draw);
+}
+draw();
+document.addEventListener('touchmove',e=>{const r=document.body.getBoundingClientRect();tX=e.touches[0].clientX-r.left;tY=e.touches[0].clientY-r.top;},{passive:true});
+document.addEventListener('mousemove',e=>{const r=document.body.getBoundingClientRect();tX=e.clientX-r.left;tY=e.clientY-r.top;});
+document.addEventListener('touchend',()=>{tX=-1;tY=-1;});
+
+// ═══ SOUNDS ═══
+let aC;function iA(){if(!aC)aC=new(window.AudioContext||window.webkitAudioContext)();}
+function sndTick(){try{iA();const o=aC.createOscillator(),g=aC.createGain();o.connect(g);g.connect(aC.destination);o.frequency.value=1100;o.type='sine';g.gain.setValueAtTime(0.02,aC.currentTime);g.gain.exponentialRampToValueAtTime(0.001,aC.currentTime+0.06);o.start();o.stop(aC.currentTime+0.06);}catch(e){}}
+function sndWhoosh(){try{iA();const b=aC.createBufferSource(),buf=aC.createBuffer(1,aC.sampleRate*0.12,aC.sampleRate),d=buf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.exp(-i/(d.length*0.25))*0.03;b.buffer=buf;b.connect(aC.destination);b.start();}catch(e){}}
+function sndChime(){try{iA();[880,1100,1320].forEach((f,i)=>{const o=aC.createOscillator(),g=aC.createGain();o.connect(g);g.connect(aC.destination);o.frequency.value=f;o.type='sine';const t=aC.currentTime+i*0.08;g.gain.setValueAtTime(0.02,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.25);o.start(t);o.stop(t+0.25);});}catch(e){}}
+
+// ═══ TIME ═══
+let osLang='en';
+function ts(){const d=new Date();let h=d.getHours(),m=d.getMinutes();return(h%12||12)+':'+(m<10?'0':'')+m;}
+function ft(){return new Date().toLocaleTimeString('en-GB',{hour12:false});}
+function ds(){const locales={en:'en-US',ar:'ar-AE',fr:'fr-FR',de:'de-DE',zh:'zh-CN'};return new Date().toLocaleDateString(locales[osLang]||'en-US',{weekday:'long',month:'long',day:'numeric'});}
+function ut(){document.getElementById('sbt').textContent=ts();document.getElementById('lt').textContent=ts();document.getElementById('ld').textContent=ds();}
+setInterval(ut,1000);ut();
+
+// ═══ SETUP WIZARD ═══
+let setupPage=0;const SETUP_PAGES=5;
+let setupDone=false;
+
+// ═══ FULL TRANSLATION SYSTEM ═══
+const i18n={
+  en:{
+    hello:'Hello.',welcomeSub:'Welcome to KhahanA OS',getStarted:'Get Started',
+    langTitle:'Language',langDesc:'Choose your preferred language',continue:'Continue',
+    wifiTitle:'Connect to Wi-Fi',joinNetwork:'Join Network',
+    kidTitle:'KhahanA ID',kidDesc:'Sign in with your KhahanA ID to access all services',
+    emailPh:'Email or username',passPh:'Password',signIn:'Sign In',skip:'Skip for now',
+    ready:'You\'re All Set',readyDesc:'Intelligence amplified. Experience transformed. Welcome to KhahanA OS 1.0',
+    startUsing:'Start Using KhahanA OS',slideUnlock:'slide to unlock',
+    weather:'Weather',clock:'Clock',calculator:'Calculator',notes:'Notes',photos:'Photos',
+    compass:'Compass',maps:'Maps',settings:'Settings',music:'Music',messages:'Messages',
+    airplaneMode:'Airplane Mode',wifi:'Wi-Fi',bluetooth:'Bluetooth',cellular:'Cellular',
+    displayBright:'Display & Brightness',wallpaper:'Wallpaper',privacy:'Privacy & Security',
+    battery:'Battery',general:'General',displayRes:'Display Resolution',
+    signInPrompt:'Sign in to KhahanA OS',signInSub:'Get the full experience with all features',
+    notifications:'Notifications',clearAll:'Clear All',noNotifs:'No Notifications',
+    searchPh:'Search apps, settings, and more...',cancel:'Cancel',suggestions:'Siri Suggestions',
+    send:'Send',msgPh:'Message',
+  },
+  ar:{
+    hello:'مرحباً.',welcomeSub:'مرحباً بك في نظام KhahanA',getStarted:'ابدأ',
+    langTitle:'اللغة',langDesc:'اختر لغتك المفضلة',continue:'متابعة',
+    wifiTitle:'الاتصال بشبكة Wi-Fi',joinNetwork:'انضم للشبكة',
+    kidTitle:'حساب KhahanA',kidDesc:'سجل الدخول بحساب KhahanA للوصول إلى جميع الخدمات',
+    emailPh:'البريد الإلكتروني أو اسم المستخدم',passPh:'كلمة المرور',signIn:'تسجيل الدخول',skip:'تخطي الآن',
+    ready:'أنت جاهز',readyDesc:'ذكاء معزز. تجربة محولة. مرحباً بك في KhahanA OS 1.0',
+    startUsing:'ابدأ استخدام KhahanA OS',slideUnlock:'اسحب لفتح القفل',
+    weather:'الطقس',clock:'الساعة',calculator:'الآلة الحاسبة',notes:'الملاحظات',photos:'الصور',
+    compass:'البوصلة',maps:'الخرائط',settings:'الإعدادات',music:'الموسيقى',messages:'الرسائل',
+    airplaneMode:'وضع الطيران',wifi:'واي فاي',bluetooth:'بلوتوث',cellular:'شبكة خلوية',
+    displayBright:'الشاشة والإضاءة',wallpaper:'خلفية الشاشة',privacy:'الخصوصية والأمان',
+    battery:'البطارية',general:'عام',displayRes:'دقة العرض',
+    signInPrompt:'سجل الدخول في KhahanA OS',signInSub:'احصل على التجربة الكاملة مع جميع الميزات',
+    notifications:'الإشعارات',clearAll:'مسح الكل',noNotifs:'لا توجد إشعارات',
+    searchPh:'ابحث في التطبيقات والإعدادات...',cancel:'إلغاء',suggestions:'اقتراحات',
+    send:'إرسال',msgPh:'رسالة',
+  },
+  fr:{
+    hello:'Bonjour.',welcomeSub:'Bienvenue sur KhahanA OS',getStarted:'Commencer',
+    langTitle:'Langue',langDesc:'Choisissez votre langue préférée',continue:'Continuer',
+    wifiTitle:'Connexion Wi-Fi',joinNetwork:'Rejoindre le réseau',
+    kidTitle:'Identifiant KhahanA',kidDesc:'Connectez-vous avec votre identifiant KhahanA',
+    emailPh:'E-mail ou nom d\'utilisateur',passPh:'Mot de passe',signIn:'Se connecter',skip:'Ignorer',
+    ready:'Vous êtes prêt',readyDesc:'Intelligence amplifiée. Expérience transformée. Bienvenue sur KhahanA OS 1.0',
+    startUsing:'Commencer à utiliser KhahanA OS',slideUnlock:'glisser pour déverrouiller',
+    weather:'Météo',clock:'Horloge',calculator:'Calculette',notes:'Notes',photos:'Photos',
+    compass:'Boussole',maps:'Plans',settings:'Réglages',music:'Musique',messages:'Messages',
+    airplaneMode:'Mode Avion',wifi:'Wi-Fi',bluetooth:'Bluetooth',cellular:'Cellulaire',
+    displayBright:'Luminosité',wallpaper:'Fond d\'écran',privacy:'Confidentialité',
+    battery:'Batterie',general:'Général',displayRes:'Résolution d\'affichage',
+    signInPrompt:'Connectez-vous à KhahanA OS',signInSub:'Profitez de toutes les fonctionnalités',
+    notifications:'Notifications',clearAll:'Tout effacer',noNotifs:'Aucune notification',
+    searchPh:'Rechercher des apps, réglages...',cancel:'Annuler',suggestions:'Suggestions Siri',
+    send:'Envoyer',msgPh:'Message',
+  },
+  de:{
+    hello:'Hallo.',welcomeSub:'Willkommen bei KhahanA OS',getStarted:'Los geht\'s',
+    langTitle:'Sprache',langDesc:'Wählen Sie Ihre bevorzugte Sprache',continue:'Weiter',
+    wifiTitle:'Mit WLAN verbinden',joinNetwork:'Netzwerk beitreten',
+    kidTitle:'KhahanA ID',kidDesc:'Melden Sie sich mit Ihrer KhahanA ID an',
+    emailPh:'E-Mail oder Benutzername',passPh:'Passwort',signIn:'Anmelden',skip:'Überspringen',
+    ready:'Alles bereit',readyDesc:'Intelligenz verstärkt. Erlebnis transformiert. Willkommen bei KhahanA OS 1.0',
+    startUsing:'KhahanA OS verwenden',slideUnlock:'zum Entsperren streichen',
+    weather:'Wetter',clock:'Uhr',calculator:'Rechner',notes:'Notizen',photos:'Fotos',
+    compass:'Kompass',maps:'Karten',settings:'Einstellungen',music:'Musik',messages:'Nachrichten',
+    airplaneMode:'Flugmodus',wifi:'WLAN',bluetooth:'Bluetooth',cellular:'Mobilfunk',
+    displayBright:'Anzeige & Helligkeit',wallpaper:'Hintergrundbild',privacy:'Datenschutz',
+    battery:'Batterie',general:'Allgemein',displayRes:'Bildschirmauflösung',
+    signInPrompt:'Bei KhahanA OS anmelden',signInSub:'Alle Funktionen nutzen',
+    notifications:'Mitteilungen',clearAll:'Alle löschen',noNotifs:'Keine Mitteilungen',
+    searchPh:'Apps, Einstellungen suchen...',cancel:'Abbrechen',suggestions:'Siri-Vorschläge',
+    send:'Senden',msgPh:'Nachricht',
+  },
+  zh:{
+    hello:'你好。',welcomeSub:'欢迎使用 KhahanA OS',getStarted:'开始',
+    langTitle:'语言',langDesc:'选择您的首选语言',continue:'继续',
+    wifiTitle:'连接 Wi-Fi',joinNetwork:'加入网络',
+    kidTitle:'KhahanA ID',kidDesc:'使用您的 KhahanA ID 登录以访问所有服务',
+    emailPh:'电子邮件或用户名',passPh:'密码',signIn:'登录',skip:'暂时跳过',
+    ready:'一切就绪',readyDesc:'智能增强，体验升级。欢迎使用 KhahanA OS 1.0',
+    startUsing:'开始使用 KhahanA OS',slideUnlock:'滑动解锁',
+    weather:'天气',clock:'时钟',calculator:'计算器',notes:'备忘录',photos:'照片',
+    compass:'指南针',maps:'地图',settings:'设置',music:'音乐',messages:'信息',
+    airplaneMode:'飞行模式',wifi:'无线局域网',bluetooth:'蓝牙',cellular:'蜂窝网络',
+    displayBright:'显示与亮度',wallpaper:'墙纸',privacy:'隐私与安全',
+    battery:'电池',general:'通用',displayRes:'显示分辨率',
+    signInPrompt:'登录 KhahanA OS',signInSub:'获得全部功能体验',
+    notifications:'通知',clearAll:'全部清除',noNotifs:'没有通知',
+    searchPh:'搜索应用、设置等...',cancel:'取消',suggestions:'Siri 建议',
+    send:'发送',msgPh:'信息',
+  }
+};
+
+function t(key){return i18n[osLang]?.[key]||i18n.en[key]||key;}
+const LANG_KEYS={weather:'weather',clock:'clock',calc:'calculator',notes:'notes',photos:'photos',compass:'compass',maps:'maps',settings:'settings',music:'music',messages:'messages'};
+
+function applyLanguage(){
+  const isRTL=osLang==='ar';
+  document.body.style.direction=isRTL?'rtl':'ltr';
+  // Update lock screen
+  document.querySelector('.slide-lbl').textContent=t('slideUnlock');
+  // Update notification center
+  document.querySelector('.nc-title').textContent=t('notifications');
+  document.querySelector('.nc-clear').textContent=t('clearAll');
+  // Update search
+  const si=document.getElementById('searchInput');if(si)si.placeholder=t('searchPh');
+  const sc=document.querySelector('.search-cancel');if(sc)sc.textContent=t('cancel');
+  const ss=document.querySelector('.search-section-title');if(ss)ss.textContent=t('suggestions');
+  // Re-render home with translated names
+  renderHome();
+}
+
+function initLangs(){
+  const l=document.getElementById('langOpts');
+  const langs=[
+    {code:'en',label:'English'},
+    {code:'ar',label:'العربية (Arabic)'},
+    {code:'fr',label:'Français (French)'},
+    {code:'de',label:'Deutsch (German)'},
+    {code:'zh',label:'中文 (Chinese)'},
+  ];
+  langs.forEach((lg,i)=>{
+    const d=document.createElement('div');d.className='setup-opt'+(i===0?' sel':'');
+    d.dataset.lang=lg.code;
+    d.innerHTML=`<span>${lg.label}</span><span class="chk"></span>`;
+    d.onclick=function(){
+      l.querySelectorAll('.setup-opt').forEach(o=>o.classList.remove('sel'));
+      this.classList.add('sel');
+      osLang=this.dataset.lang;
+      updateSetupTexts();
+    };
+    l.appendChild(d);
+  });
+}
+
+function updateSetupTexts(){
+  const isRTL=osLang==='ar';
+  document.querySelectorAll('.setup-page').forEach(p=>p.style.direction=isRTL?'rtl':'ltr');
+  // Page 1 (current)
+  document.querySelector('#sp1 .setup-title').textContent=t('langTitle');
+  document.querySelector('#sp1 .setup-desc').textContent=t('langDesc');
+  document.querySelector('#sp1 .setup-btn').textContent=t('continue');
+  // Page 2
+  document.querySelector('#sp2 .setup-title').textContent=t('wifiTitle');
+  document.querySelector('#sp2 .setup-btn').textContent=t('joinNetwork');
+  // Page 3
+  document.querySelector('#sp3 .setup-title').textContent=t('kidTitle');
+  document.querySelector('#sp3 .setup-desc').textContent=t('kidDesc');
+  document.getElementById('kidEmail').placeholder=t('emailPh');
+  document.getElementById('kidPass').placeholder=t('passPh');
+  document.querySelector('#sp3 .setup-btn').textContent=t('signIn');
+  // Page 4
+  document.querySelector('#sp4 .setup-title').textContent=t('ready');
+  document.querySelector('#sp4 .setup-desc').textContent=t('readyDesc');
+  document.querySelector('#sp4 .setup-btn').textContent=t('startUsing');
+}
+function selOpt(el){el.parentElement.querySelectorAll('.setup-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+function nextSetup(){
+  const cur=document.getElementById('sp'+setupPage);
+  cur.classList.add('leaving');
+  setTimeout(()=>{cur.style.display='none';cur.classList.remove('leaving');setupPage++;
+    const nxt=document.getElementById('sp'+setupPage);if(nxt){nxt.style.display='flex';nxt.classList.add('active');}
+    if(setupPage===4)fillModelInfo?.();
+  },350);sndTick();
+}
+function finishSetup(){
+  document.getElementById('setup').classList.add('off');
+  applyLanguage();
+  setTimeout(()=>{document.getElementById('sb').classList.add('vis');document.getElementById('lock').classList.remove('off');},400);
+  sndChime();
+}
+
+// ═══ BOOT ═══
+let bp=0;const bb=document.getElementById('bb');
+function bTick(){bp+=Math.random()*7+3;if(bp>100)bp=100;bb.style.width=bp+'%';
+  if(bp<100)setTimeout(bTick,100+Math.random()*140);
+  else setTimeout(()=>{
+    document.getElementById('boot').classList.add('off');
+    if(setupDone){document.getElementById('sb').classList.add('vis');document.getElementById('lock').classList.remove('off');}
+    else{document.getElementById('setup').classList.remove('off');document.getElementById('sp0').style.display='flex';document.getElementById('sp0').classList.add('active');initLangs();}
+  },400);
+}
+setTimeout(bTick,500);
+
+// ═══ SLIDE TO UNLOCK ═══
+const slt=document.getElementById('slt'),slk=document.getElementById('slk');
+let sling=false,sx0=0;
+slt.addEventListener('mousedown',e=>{sling=true;sx0=e.clientX;});
+slt.addEventListener('touchstart',e=>{sling=true;sx0=e.touches[0].clientX;},{passive:true});
+function slMv(cx){if(!sling)return;const dx=cx-sx0,mx=slt.offsetWidth-42,p=Math.max(3,Math.min(dx+3,mx));slk.style.left=p+'px';if(p>=mx-5){sndChime();sling=false;document.getElementById('lock').classList.add('off');document.getElementById('home').classList.add('on');}}
+document.addEventListener('mousemove',e=>slMv(e.clientX));
+document.addEventListener('touchmove',e=>slMv(e.touches[0].clientX),{passive:true});
+document.addEventListener('mouseup',()=>{if(sling){sling=false;slk.style.left='3px';}});
+document.addEventListener('touchend',()=>{if(sling){sling=false;slk.style.left='3px';}});
+
+// ═══ APPS ═══
+const APPS=[
+  {id:'weather',name:'Weather',bg:'linear-gradient(180deg,#47bfff,#1d8cd6)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="14" r="5" fill="#FFD500"/><path d="M16 4v3M16 25v3M6 14H3M29 14h-3M8.5 6.5l2 2M21.5 19.5l2 2M8.5 21.5l2-2M21.5 8.5l2-2" stroke="#FFD500" stroke-width="2" stroke-linecap="round"/><path d="M10 22c-2.2 0-4 1.3-4 3s1.8 3 4 3h14c1.7 0 3-1 3-2.5S25.7 23 24 23c0-2.2-1.8-4-4-4-.8 0-1.5.2-2.1.6A5 5 0 0013 17c-1.7 0-3 1.3-3 3v2z" fill="rgba(255,255,255,0.85)"/></svg>',peek:'Dubai — 42° Sunny'},
+  {id:'clock',name:'Clock',bg:'linear-gradient(180deg,#2c2c2e,#000)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="16" r="1.5" fill="#ff9500"/><line x1="16" y1="16" x2="16" y2="8" stroke="#fff" stroke-width="2" stroke-linecap="round"/><line x1="16" y1="16" x2="22" y2="20" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/><line x1="16" y1="16" x2="16" y2="6" stroke="#ff9500" stroke-width="0.8" stroke-linecap="round"/><circle cx="16" cy="5" r="0.5" fill="#fff"/><circle cx="16" cy="27" r="0.5" fill="#fff"/><circle cx="5" cy="16" r="0.5" fill="#fff"/><circle cx="27" cy="16" r="0.5" fill="#fff"/></svg>'},
+  {id:'calc',name:'Calculator',bg:'linear-gradient(180deg,#444,#1a1a1a)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="6" y="3" width="20" height="26" rx="3" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.3)" stroke-width="0.5"/><rect x="8" y="5" width="16" height="7" rx="1" fill="#505050"/><text x="22" y="11" text-anchor="end" font-size="7" fill="#fff" font-weight="300" font-family="Overpass">386</text><circle cx="10.5" cy="16.5" r="1.8" fill="#a5a5a5"/><circle cx="16" cy="16.5" r="1.8" fill="#a5a5a5"/><circle cx="21.5" cy="16.5" r="1.8" fill="#ff9500"/><circle cx="10.5" cy="21.5" r="1.8" fill="#333"/><circle cx="16" cy="21.5" r="1.8" fill="#333"/><circle cx="21.5" cy="21.5" r="1.8" fill="#ff9500"/><rect x="8.5" y="25" width="5" height="3.5" rx="1.8" fill="#333"/><circle cx="21.5" cy="26.5" r="1.8" fill="#00D4AA"/></svg>'},
+  {id:'notes',name:'Notes',bg:'linear-gradient(180deg,#fef9e7,#f4d03f)',svg:'<svg width="28" height="28" viewBox="0 0 32 32"><rect x="5" y="2" width="22" height="28" rx="2" fill="#fff" stroke="#c9a228" stroke-width="0.5"/><rect x="5" y="2" width="22" height="5" fill="#e8b829" rx="2"/><line x1="9" y1="12" x2="23" y2="12" stroke="#c9a228" stroke-width="0.8"/><line x1="9" y1="16" x2="23" y2="16" stroke="#c9a228" stroke-width="0.8"/><line x1="9" y1="20" x2="20" y2="20" stroke="#c9a228" stroke-width="0.8"/><line x1="9" y1="24" x2="17" y2="24" stroke="#c9a228" stroke-width="0.8"/></svg>'},
+  {id:'photos',name:'Photos',bg:'linear-gradient(135deg,#ff6b35,#ff3366,#cc33ff,#3366ff,#33ccff,#33ff99)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="10" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="16" r="5" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="16" r="1.5" fill="#fff"/><path d="M16 6v3M16 23v3M6 16h3M23 16h3" stroke="#fff" stroke-width="1" stroke-linecap="round"/></svg>'},
+  {id:'compass',name:'Compass',bg:'linear-gradient(135deg,#00D4AA,#1B3A5C)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#fff" stroke-width="1.2"/><polygon points="20,8 14,14 12,24 18,18" fill="#ff3b30" opacity="0.7"/><polygon points="20,8 18,18 12,24 14,14" fill="#fff" opacity="0.6"/><circle cx="16" cy="16" r="1" fill="#fff"/><text x="16" y="5" text-anchor="middle" font-size="3" fill="#fff" font-weight="700">N</text><text x="16" y="29" text-anchor="middle" font-size="3" fill="#fff" font-weight="700">S</text></svg>'},
+  {id:'maps',name:'Maps',bg:'linear-gradient(180deg,#72c965,#2d8a2e)',svg:'<svg width="28" height="28" viewBox="0 0 32 32"><path d="M11 4l10 3v21l-10-3V4z" fill="rgba(255,255,255,0.25)" stroke="#fff" stroke-width="0.8"/><path d="M1 7l10-3v21L1 28V7z" fill="rgba(255,255,255,0.15)" stroke="#fff" stroke-width="0.8"/><path d="M21 7l10-3v21l-10 3V7z" fill="rgba(255,255,255,0.15)" stroke="#fff" stroke-width="0.8"/><circle cx="16" cy="13" r="3" fill="none" stroke="#ff3b30" stroke-width="1.5"/><circle cx="16" cy="13" r="1" fill="#ff3b30"/></svg>'},
+  {id:'settings',name:'Settings',bg:'linear-gradient(180deg,#9a9a9f,#58585c)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><path d="M16 10a6 6 0 100 12 6 6 0 000-12z" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="16" r="2.5" fill="#fff"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M5.9 5.9l2.8 2.8M23.3 23.3l2.8 2.8M5.9 26.1l2.8-2.8M23.3 8.7l2.8-2.8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>'},
+  {id:'music',name:'Music',bg:'linear-gradient(135deg,#fc3c44,#c42b50)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="6" y="4" width="4" height="18" rx="2" fill="#fff" opacity="0.3"/><rect x="14" y="8" width="4" height="14" rx="2" fill="#fff" opacity="0.5"/><rect x="22" y="2" width="4" height="20" rx="2" fill="#fff" opacity="0.7"/><ellipse cx="8" cy="24" rx="4" ry="3" fill="#fff"/><ellipse cx="16" cy="25" rx="4" ry="3" fill="#fff" opacity="0.8"/><ellipse cx="24" cy="24" rx="4" ry="3" fill="#fff" opacity="0.6"/></svg>',peek:'♫ Night Drive — KhahanA Beats'},
+  {id:'messages',name:'Messages',bg:'linear-gradient(180deg,var(--accent),#00a88a)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="3" y="5" width="26" height="18" rx="9" fill="#fff"/><polygon points="10,23 16,28 14,23" fill="#fff"/><circle cx="11" cy="14" r="2" fill="#00D4AA"/><circle cx="16" cy="14" r="2" fill="#00a88a"/><circle cx="21" cy="14" r="2" fill="#008870"/></svg>',badge:3,peek:'Sanam: That\'s incredible!'},
+];
+const DOCK_IDS=['messages','compass','music'];
+
+const RES=[
+  {name:'iPhone SE (3rd)',w:375,h:667,l:'750×1334 @2x'},
+  {name:'iPhone 8',w:375,h:667,l:'750×1334 @2x'},
+  {name:'iPhone 12 mini',w:375,h:812,l:'1125×2436 @3x'},
+  {name:'iPhone 12/13/14',w:390,h:844,l:'1170×2532 @3x'},
+  {name:'iPhone 13 Pro',w:390,h:844,l:'1170×2532 @3x'},
+  {name:'iPhone 14 Pro',w:393,h:852,l:'1179×2556 @3x'},
+  {name:'iPhone 14 Plus',w:428,h:926,l:'1284×2778 @3x'},
+  {name:'iPhone 15',w:393,h:852,l:'1179×2556 @3x'},
+  {name:'iPhone 15 Pro',w:393,h:852,l:'1179×2556 @3x'},
+  {name:'iPhone 15 Pro Max',w:430,h:932,l:'1290×2796 @3x'},
+  {name:'iPhone 16',w:393,h:852,l:'1179×2556 @3x'},
+  {name:'iPhone 16e',w:375,h:812,l:'1125×2436 @3x'},
+  {name:'iPhone 16 Plus',w:430,h:932,l:'1290×2796 @3x'},
+  {name:'iPhone 16 Pro',w:402,h:874,l:'1206×2622 @3x'},
+  {name:'iPhone 16 Pro Max',w:440,h:956,l:'1320×2868 @3x'},
+];
+let curRes=3; // default iPhone 12/13/14
+
+function getAppName(a){return LANG_KEYS[a.id]?t(LANG_KEYS[a.id]):a.name;}
+function renderHome(){
+  const g=document.getElementById('grid'),d=document.getElementById('dock');g.innerHTML='';d.innerHTML='';
+  APPS.filter(a=>!DOCK_IDS.includes(a.id)).forEach(a=>{const nm=getAppName(a);g.innerHTML+=`<div class="ai" onclick="sndTick();openApp('${a.id}')" oncontextmenu="event.preventDefault();showPk(event,'${a.id}')" ontouchstart="pkT=setTimeout(()=>showPk(event,'${a.id}'),500)" ontouchend="clearTimeout(pkT);hidePk()"><div class="aib" style="background:${a.bg}">${a.svg}${a.badge?`<div class="badge">${a.badge}</div>`:''}</div><span class="an">${nm}</span></div>`;});
+  DOCK_IDS.forEach(id=>{const a=APPS.find(x=>x.id===id);const nm=getAppName(a);d.innerHTML+=`<div class="ai" onclick="sndTick();openApp('${a.id}')" oncontextmenu="event.preventDefault();showPk(event,'${a.id}')" ontouchstart="pkT=setTimeout(()=>showPk(event,'${a.id}'),500)" ontouchend="clearTimeout(pkT);hidePk()"><div class="aib" style="background:${a.bg}">${a.svg}${a.badge?`<div class="badge">${a.badge}</div>`:''}</div><span class="an">${nm}</span></div>`;});
+}
+renderHome();
+
+// QUICK PEEK
+let pkT;
+function showPk(e,id){const a=APPS.find(x=>x.id===id);if(!a?.peek)return;const pk=document.getElementById('peek');pk.querySelector('.peek-title').textContent=a.name;pk.querySelector('.peek-body').textContent=a.peek;const bx=e.target.closest('.ai')?.getBoundingClientRect();const br=document.body.getBoundingClientRect();if(bx){pk.style.left=Math.min(Math.max(bx.left-br.left,10),br.width-250)+'px';pk.style.top=Math.max(bx.top-br.top-70,40)+'px';}pk.classList.add('on');}
+function hidePk(){document.getElementById('peek').classList.remove('on');}
+
+// CONTROL/NOTIF CENTER
+document.getElementById('ccZ').addEventListener('click',()=>{document.getElementById('cc').classList.toggle('open');sndTick();});
+document.getElementById('ncZ').addEventListener('click',()=>{document.getElementById('nc').classList.toggle('open');sndTick();});
+function ccSl(e,el){const r=el.getBoundingClientRect();el.querySelector('.cc-slider-fill').style.width=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100))+'%';}
+function toggleFlash(){const f=document.getElementById('flash'),t=document.getElementById('ccF');if(f.style.display==='block'){f.style.display='none';t.classList.remove('active');t.querySelector('.cc-val').textContent='Off';}else{f.style.display='block';t.classList.add('active');t.querySelector('.cc-val').textContent='On';}}
+const NOTIFS=[{app:'Messages',bg:'#00D4AA',svg:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M20 2H4a2 2 0 00-2 2v12a2 2 0 002 2h3l5 5 5-5h3a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>',msg:'Sanam: That\'s incredible! Send me a screenshot',time:'2m ago'},{app:'Weather',bg:'#5ac8fa',svg:'<svg viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="5"/></svg>',msg:'Extreme heat warning for Dubai today.',time:'15m ago'},{app:'KhahanA OS',bg:'#1B3A5C',svg:'<svg viewBox="0 0 24 24" fill="#00D4AA"><circle cx="12" cy="12" r="8" fill="none" stroke="#00D4AA" stroke-width="1.5"/><text x="12" y="15" text-anchor="middle" font-size="8" font-weight="800">K</text></svg>',msg:'Welcome to KhahanA OS 1.0. Intelligence amplified.',time:'Just now'}];
+function renderN(){document.getElementById('ncL').innerHTML=NOTIFS.map(n=>`<div class="nc-card"><div class="nc-card-ic" style="background:${n.bg}">${n.svg}</div><div class="nc-card-body"><div class="nc-card-app">${n.app}</div><div class="nc-card-msg">${n.msg}</div><div class="nc-card-time">${n.time}</div></div></div>`).join('');}
+renderN();
+function clrN(){document.getElementById('ncL').innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.2);padding:30px;font-size:13px">No Notifications</div>';}
+
+// ═══ APP OPEN/CLOSE ═══
+function openApp(id){sndWhoosh();let s=document.getElementById('s-'+id);if(s){s.classList.add('open');if(id==='clock')startClk();return;}s=document.createElement('div');s.className='as open';s.id='s-'+id;const appName=getAppName(APPS.find(a=>a.id===id));s.innerHTML=`<div class="ab" style="${barBg(id)}"><button class="bk" onclick="closeApp('${id}')"><svg viewBox="0 0 12 20"><path d="M10 2L2 10l8 8"/></svg></button><span class="t">${appName}</span></div><div class="ac" id="c-${id}"></div>`;document.body.appendChild(s);build(id);}
+function closeApp(id){sndWhoosh();const el=document.getElementById('s-'+id);if(el){el.style.animation='none';el.style.transform='translateX(100%)';el.style.transition='transform 0.2s ease-in';setTimeout(()=>{el.classList.remove('open');el.style.cssText='';},220);}}
+function barBg(id){return{weather:'background:linear-gradient(180deg,#5ac8fa,#4a90d9)',clock:'background:linear-gradient(180deg,#1a1a1a,#0a0a0a)',calc:'background:#111',notes:'background:linear-gradient(180deg,#c49a38,#8b6914)',music:'background:linear-gradient(180deg,#111,#0a0a0a)',maps:'background:linear-gradient(180deg,#86c67c,#3d8b33)',compass:'background:linear-gradient(135deg,#00D4AA,#1B3A5C)',messages:'background:linear-gradient(180deg,#00D4AA,#00a88a)'}[id]||'';}
+function build(id){const c=document.getElementById('c-'+id);({weather:bW,clock:()=>{c.className+=' clk-w';bClk(c);},calc:()=>{c.className+=' calc-w';bCalc(c);},notes:bN,photos:()=>{c.className+=' pho-w';bPho(c);},compass:()=>{c.className+=' saf-w';bSaf(c);},maps:()=>{c.className+=' map-w';bMap(c);},settings:()=>{c.className+=' set-w';bSet(c);},music:()=>{c.className+=' mus-w';bMus(c);},messages:()=>{c.className+=' msg-w';bMsg(c);}})[id]?.(c);}
+
+// ═══ INDIVIDUAL APPS ═══
+function bW(c){c.className+=' w-bg';c.innerHTML=`<div class="w-city">Dubai</div><div class="w-temp">42°</div><div class="w-cond">Sunny</div><div class="w-hl">H:45° L:32°</div><div class="w-hrs">${['Now,☀️,42','1PM,☀️,43','2PM,☀️,44','3PM,🌤,43','4PM,☀️,42','5PM,🌤,40','6PM,🌅,38','7PM,🌙,36'].map(h=>{const[t,i,d]=h.split(',');return`<div class="w-h"><span>${t}</span><span style="font-size:17px">${i}</span><span class="ht">${d}°</span></div>`;}).join('')}</div><div class="w-wk">${[['Sun','☀️',44,31],['Mon','☀️',43,30],['Tue','⛅',40,29],['Wed','☀️',45,32],['Thu','☀️',46,33],['Fri','🌤',42,30],['Sat','☀️',44,31]].map(([d,i,h,l])=>`<div class="w-d"><span class="dn">${d}</span><span class="di">${i}</span><span class="dt"><span class="lo">${l}°</span><span>${h}°</span></span></div>`).join('')}</div>`;}
+
+let ckI;
+function bClk(c){c.innerHTML=`<div class="cf" id="ckF"><div class="cdot"></div><div class="ch chh" id="ckH"></div><div class="ch chm" id="ckM"></div><div class="ch chs" id="ckS"></div></div><div class="clk-digi" id="ckD">00:00:00</div><div class="sw-r"><button class="swb rs" onclick="swR()">Reset</button><button class="swb go" id="swB" onclick="swTg()">Start</button></div>`;const f=document.getElementById('ckF');for(let i=0;i<60;i++){const m=document.createElement('div');m.style.cssText=`position:absolute;top:${i%5===0?'5':'7'}px;left:50%;width:${i%5===0?'2':'1'}px;height:${i%5===0?'10':'6'}px;background:${i%5===0?'rgba(0,212,170,0.7)':'rgba(255,255,255,0.3)'};margin-left:-${i%5===0?'1':'0.5'}px;transform:rotate(${i*6}deg);transform-origin:center ${85-5}px;`;f.appendChild(m);}startClk();}
+function startClk(){if(ckI)clearInterval(ckI);function t(){const d=new Date(),s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;const hs=document.getElementById('ckH'),ms=document.getElementById('ckM'),ss=document.getElementById('ckS');if(hs){hs.style.transform=`rotate(${h*30}deg)`;ms.style.transform=`rotate(${m*6}deg)`;ss.style.transform=`rotate(${s*6}deg)`;}const dg=document.getElementById('ckD');if(dg&&!swO)dg.textContent=ft();}t();ckI=setInterval(t,1000);}
+let swO=false,swC=0,swI;
+function swTg(){const b=document.getElementById('swB');if(swO){clearInterval(swI);b.textContent='Start';b.className='swb go';}else{swI=setInterval(()=>{swC+=10;const ms=Math.floor(swC%1000/10),s=Math.floor(swC/1000)%60,m=Math.floor(swC/60000);document.getElementById('ckD').textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${ms<10?'0':''}${ms}`;},10);b.textContent='Stop';b.className='swb st';}swO=!swO;}
+function swR(){clearInterval(swI);swO=false;swC=0;const b=document.getElementById('swB');if(b){b.textContent='Start';b.className='swb go';}const d=document.getElementById('ckD');if(d)d.textContent='00:00.00';}
+
+let cv='0',cp=null,co=null,cr=false;
+function bCalc(c){c.innerHTML=`<div class="calc-d" id="cD">0</div><div class="calc-g"><button class="cb f" onclick="cFn('AC')">AC</button><button class="cb f" onclick="cFn('+-')">+/−</button><button class="cb f" onclick="cFn('%')">%</button><button class="cb o" onclick="cOp('/')">÷</button><button class="cb n" onclick="cNm('7')">7</button><button class="cb n" onclick="cNm('8')">8</button><button class="cb n" onclick="cNm('9')">9</button><button class="cb o" onclick="cOp('*')">×</button><button class="cb n" onclick="cNm('4')">4</button><button class="cb n" onclick="cNm('5')">5</button><button class="cb n" onclick="cNm('6')">6</button><button class="cb o" onclick="cOp('-')">−</button><button class="cb n" onclick="cNm('1')">1</button><button class="cb n" onclick="cNm('2')">2</button><button class="cb n" onclick="cNm('3')">3</button><button class="cb o" onclick="cOp('+')">+</button><button class="cb n z" onclick="cNm('0')">0</button><button class="cb n" onclick="cNm('.')">.</button><button class="cb o" onclick="cEq()">=</button></div>`;}
+function cNm(n){sndTick();if(cr){cv='';cr=false;}if(n==='.'&&cv.includes('.'))return;cv=cv==='0'&&n!=='.'?n:cv+n;document.getElementById('cD').textContent=cv;document.querySelectorAll('.cb.o').forEach(b=>b.classList.remove('sel'));}
+function cOp(o){sndTick();cp=parseFloat(cv);co=o;cr=true;document.querySelectorAll('.cb.o').forEach(b=>b.classList.remove('sel'));event.target.classList.add('sel');}
+function cEq(){if(!co||cp===null)return;sndTick();const c=parseFloat(cv);let r;switch(co){case'+':r=cp+c;break;case'-':r=cp-c;break;case'*':r=cp*c;break;case'/':r=c===0?'Error':cp/c;break;}cv=typeof r==='number'?parseFloat(r.toPrecision(10)).toString():r;document.getElementById('cD').textContent=cv;co=null;cp=null;cr=true;document.querySelectorAll('.cb.o').forEach(b=>b.classList.remove('sel'));}
+function cFn(f){sndTick();if(f==='AC'){cv='0';cp=null;co=null;}else if(f==='+-')cv=(parseFloat(cv)*-1).toString();else if(f==='%')cv=(parseFloat(cv)/100).toString();document.getElementById('cD').textContent=cv;}
+
+function bN(c){c.innerHTML=`<div class="notes-w"><textarea placeholder="Start typing your note..."></textarea></div>`;}
+
+function bPho(c){c.innerHTML=`<div class="pho-t"><div class="pho-tb on">All Photos</div><div class="pho-tb">Albums</div><div class="pho-tb">Moments</div></div><div class="pho-g" id="pG"></div>`;const g=document.getElementById('pG');[['#e74c3c','#f39c12'],['#3498db','#2ecc71'],['#9b59b6','#e74c3c'],['#1abc9c','#3498db'],['#f39c12','#e74c3c'],['#2ecc71','#1abc9c'],['#e74c3c','#9b59b6'],['#3498db','#f39c12'],['#1abc9c','#e74c3c'],['#9b59b6','#3498db'],['#f39c12','#2ecc71'],['#e74c3c','#1abc9c'],['#2c3e50','#3498db'],['#e67e22','#e74c3c'],['#1abc9c','#9b59b6']].forEach(([a,b],i)=>{const d=document.createElement('div');d.className='pho-i';d.style.background=`linear-gradient(${40+i*25}deg,${a},${b})`;g.appendChild(d);});}
+
+function bMsg(c){c.innerHTML=`<div class="msg-l" id="mL"></div><div class="msg-b"><input id="mI" placeholder="${t ? t('msgPh') : 'Message'}" onkeydown="if(event.key==='Enter')mS()"><button onclick="mS()">Send</button></div>`;const l=document.getElementById('mL');[{t:'r',m:'Hey! How\'s it going?'},{t:'s',m:'Building KhahanA OS with Ace'},{t:'r',m:'Nice! What are you working on?'},{t:'s',m:'A full OS simulator'},{t:'r',m:'That\'s incredible!'}].forEach(({t,m})=>{const d=document.createElement('div');d.className='bu '+(t==='s'?'s':'r');d.innerHTML=m+`<span class="bt">${ts()}</span>`;l.appendChild(d);});l.scrollTop=l.scrollHeight;}
+function mS(){const inp=document.getElementById('mI'),msg=inp.value.trim();if(!msg)return;sndTick();const l=document.getElementById('mL'),b=document.createElement('div');b.className='bu s';b.innerHTML=msg+`<span class="bt">${ts()}</span>`;l.appendChild(b);inp.value='';l.scrollTop=l.scrollHeight;setTimeout(()=>{const r=document.createElement('div');r.className='bu r';r.innerHTML=['Cool!','Nice one 👍','Tell me more!','🔥','Love it!'][Math.floor(Math.random()*5)]+`<span class="bt">${ts()}</span>`;l.appendChild(r);l.scrollTop=l.scrollHeight;},800+Math.random()*600);}
+
+function bSaf(c){c.innerHTML=`<div class="saf-url"><input value="khahana.com" placeholder="Search or enter website"></div><div class="saf-m"><div class="saf-ft">Favorites</div><div class="saf-g">${[['KA','#1B3A5C','KhahanA'],['G','#4285f4','Google'],['YT','#ff0000','YouTube'],['X','#000','X'],['TV','#131722','TradingView'],['in','#0077b5','LinkedIn'],['W','#333','Wikipedia'],['R','#ff4500','Reddit']].map(([l,bg,n])=>`<div class="saf-f"><div class="saf-fi" style="background:${bg}">${l}</div><span>${n}</span></div>`).join('')}</div></div>`;}
+
+function bMap(c){c.innerHTML=`<div class="map-c"></div><div class="map-gl"></div><div class="map-rd" style="top:35%;left:0;width:100%;height:12px"></div><div class="map-rd" style="top:58%;left:0;width:100%;height:8px"></div><div class="map-rd" style="top:0;left:30%;width:8px;height:100%"></div><div class="map-rd" style="top:0;left:65%;width:12px;height:100%"></div><div class="map-pin"><svg viewBox="0 0 24 36"><path d="M12 0C5.4 0 0 5.4 0 12c0 9 12 24 12 24s12-15 12-24C24 5.4 18.6 0 12 0z" fill="#ff3b30"/><circle cx="12" cy="12" r="5" fill="#fff"/></svg></div><div class="map-lbl">Dubai, UAE</div>`;}
+
+let mP=false,mI2,mPr=0;
+function bMus(c){c.innerHTML=`<div class="alb" id="alb"></div><div class="mt">Night Drive</div><div class="ma">KhahanA Beats</div><div class="mpb"><div class="mpf" id="mpf"></div></div><div class="mts"><span id="mC">0:00</span><span id="mR">-4:08</span></div><div class="mc"><button class="mc-s"><svg viewBox="0 0 24 24"><path d="M19 20L9 12l10-8v16zM7 19V5" fill="#fff"/></svg></button><button class="mc-p" onclick="mTg()"><svg viewBox="0 0 24 24" id="mPI"><path d="M8 5v14l11-7z" fill="#fff"/></svg></button><button class="mc-s"><svg viewBox="0 0 24 24"><path d="M5 4l10 8-10 8V4zM17 5v14" fill="#fff"/></svg></button></div><div class="vr"><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/></svg><div class="vt"><div class="vf"></div></div><svg viewBox="0 0 24 24"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/><path d="M15.54 8.46a5 5 0 010 7.07" fill="none" stroke="currentColor" stroke-width="1.5"/></svg></div>`;}
+function mTg(){mP=!mP;const ic=document.getElementById('mPI'),a=document.getElementById('alb');if(mP){ic.innerHTML='<rect x="6" y="4" width="4" height="16" fill="#fff"/><rect x="14" y="4" width="4" height="16" fill="#fff"/>';a?.classList.add('spin');mI2=setInterval(()=>{mPr+=0.15;if(mPr>100)mPr=0;const b=document.getElementById('mpf');if(b)b.style.width=mPr+'%';const ts=248,cs=Math.floor(ts*mPr/100),cm=Math.floor(cs/60),css=cs%60,rm=Math.floor((ts-cs)/60),rs=(ts-cs)%60;const cc=document.getElementById('mC'),cr2=document.getElementById('mR');if(cc)cc.textContent=cm+':'+(css<10?'0':'')+css;if(cr2)cr2.textContent='-'+rm+':'+(rs<10?'0':'')+rs;},100);}else{ic.innerHTML='<path d="M8 5v14l11-7z" fill="#fff"/>';a?.classList.remove('spin');clearInterval(mI2);}}
+
+function bSet(c){
+  const kid=window.khahanAID;
+  const idSection=kid
+    ?`<div class="sg" style="margin-top:14px"><div class="sr" style="padding:14px 12px;cursor:default"><div style="width:44px;height:44px;border-radius:50%;background:var(--accent);display:flex;justify-content:center;align-items:center;margin-right:12px;font-size:18px;font-weight:800;color:#000">${kid.charAt(0).toUpperCase()}</div><div><div style="font-weight:600;font-size:15px">${kid}</div><div style="font-size:11px;color:#8e8e93;margin-top:1px">KhahanA ID, iCloud+, Media & Purchases</div></div></div></div>`
+    :`<div class="sg" style="margin-top:14px"><div class="sr" onclick="showSignIn()" style="padding:14px 12px"><div style="width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.06);display:flex;justify-content:center;align-items:center;margin-right:12px"><svg width="22" height="22" viewBox="0 0 24 24" fill="#8e8e93"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg></div><div><div style="font-weight:600;font-size:15px">${t('signInPrompt')}</div><div style="font-size:11px;color:var(--accent);margin-top:1px">${t('signInSub')}</div></div><span class="sr-a">›</span></div></div>`;
+  c.innerHTML=`
+  ${idSection}
+  <div class="sg"><div class="sr"><div class="sr-i" style="background:var(--accent)"><svg viewBox="0 0 24 24"><path d="M21 16V8l-8-4.5L5 8v8l8 4.5z" fill="#fff"/></svg></div><span class="sr-l">${t("airplaneMode")}</span><div class="tg" id="airTg" onclick="toggleAirplane(this)"></div></div><div class="sr" id="wifiRow"><div class="sr-i" style="background:#007aff"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><span class="sr-l">Wi-Fi</span><span class="sr-v" id="wifiVal">KhahanA-5G</span><span class="sr-a">›</span></div><div class="sr" id="btRow"><div class="sr-i" style="background:#007aff"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><span class="sr-l">Bluetooth</span><span class="sr-v" id="btVal">On</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#4cd964"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><span class="sr-l">${t("cellular")}</span><span class="sr-v">du</span><span class="sr-a">›</span></div></div>
+  <div class="sg"><div class="sr" onclick="toggleNightMode()"><div class="sr-i" style="background:#ff9500"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#fff"/></svg></div><span class="sr-l">${t("displayBright")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#5856d6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><span class="sr-l">${t("wallpaper")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#ff2d55"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><span class="sr-l">${t("privacy")}</span><span class="sr-a">›</span></div></div>
+  <div class="sg"><div class="sr"><div class="sr-i" style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#fff"/></svg></div><span class="sr-l">${t("battery")}</span><span class="sr-v" id="setBatt">100%</span><span class="sr-a">›</span></div></div>
+  <div class="sgt">${t("displayRes")}</div>
+  <div class="rp" id="rp"></div>
+  <div class="sg"><div class="sr"><div class="sr-i" style="background:#8e8e93"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><span class="sr-l">${t("general")}</span><span class="sr-a">›</span></div></div>
+  <div class="sg"><div class="sr" style="justify-content:center;color:#8e8e93;font-size:12px;cursor:default">KhahanA OS 1.0 (Build 26A329)</div></div>
+  <div style="height:20px"></div>`;
+  bRP();
+  // Update battery in settings
+  if(navigator.getBattery)navigator.getBattery().then(b=>{const el=document.getElementById('setBatt');if(el)el.textContent=Math.round(b.level*100)+'%'+(b.charging?' ⚡':'');});
+}
+function bRP(){const p=document.getElementById('rp');if(!p)return;p.innerHTML=RES.map((r,i)=>`<div class="ro${i===curRes?' on':''}" onclick="setR(${i})"><div><span class="rn">${r.name}</span><br><span class="rpx">${r.l} — ${r.w}×${r.h}pt</span></div><span class="rck">✓</span></div>`).join('');}
+function setR(i){
+  curRes=i;sndTick();bRP();
+  // ACTUALLY RESIZE THE VIEWPORT
+  const r=RES[i];
+  document.body.style.width=r.w+'px';
+  document.body.style.height=r.h+'px';
+  // Re-init particles for new canvas size
+  setTimeout(()=>{rz();initP();},450);
+}
+
+// ═══ REAL BATTERY LEVEL + CHARGING ═══
+function updateBattery(){
+  if(navigator.getBattery){
+    navigator.getBattery().then(b=>{
+      function refresh(){
+        const pct=Math.round(b.level*100);
+        const battEl=document.getElementById('battPct');
+        if(battEl)battEl.textContent=pct+'%';
+        const bar=document.getElementById('battBar');
+        if(bar){
+          bar.setAttribute('width',Math.round(19*b.level));
+          if(b.charging)bar.setAttribute('fill','#4cd964');
+          else if(pct<=20)bar.setAttribute('fill','#ff3b30');
+          else if(pct<=50)bar.setAttribute('fill','#ffcc00');
+          else bar.setAttribute('fill','#4cd964');
+        }
+        // Charging bolt
+        const bolt=document.getElementById('chargeBolt');
+        if(bolt){
+          if(b.charging)bolt.classList.add('on');
+          else bolt.classList.remove('on');
+        }
+      }
+      refresh();
+      b.addEventListener('levelchange',refresh);
+      b.addEventListener('chargingchange',refresh);
+    });
+  }
+}
+updateBattery();
+
+// ═══ DEVICE MODEL DETECTION ═══
+function detectDevice(){
+  const ua=navigator.userAgent;
+  const w=screen.width,h=screen.height;
+  const dpr=window.devicePixelRatio||1;
+  const pw=w*dpr,ph=h*dpr;
+  let model='Unknown Device';
+  
+  if(/iPhone/.test(ua)){
+    // Detect by screen resolution
+    if(pw===640&&ph===1136)model='iPhone SE (1st/2nd)';
+    else if(pw===750&&ph===1334)model='iPhone 8 / SE (3rd)';
+    else if(pw===1125&&ph===2436)model='iPhone X / XS / 11 Pro / 12 mini / 13 mini';
+    else if(pw===828&&ph===1792)model='iPhone XR / 11';
+    else if(pw===1242&&ph===2688)model='iPhone XS Max / 11 Pro Max';
+    else if(pw===1170&&ph===2532)model='iPhone 12 / 12 Pro / 13 / 13 Pro / 14';
+    else if(pw===1284&&ph===2778)model='iPhone 12 Pro Max / 13 Pro Max / 14 Plus';
+    else if(pw===1179&&ph===2556)model='iPhone 14 Pro / 15 / 15 Pro / 16';
+    else if(pw===1290&&ph===2796)model='iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus';
+    else if(pw===1206&&ph===2622)model='iPhone 16 Pro';
+    else if(pw===1320&&ph===2868)model='iPhone 16 Pro Max';
+    else model='iPhone (Unknown Model)';
+  } else if(/iPad/.test(ua)){
+    model='iPad';
+  } else if(/Android/.test(ua)){
+    model='Android Device';
+  } else if(/Mac/.test(ua)){
+    model='Mac (Desktop)';
+  } else if(/Windows/.test(ua)){
+    model='Windows PC';
+  }
+  
+  return{model,screen:`${pw}×${ph} @${dpr}x`,os:navigator.platform||'Unknown'};
+}
+
+// Fill setup model info
+function fillModelInfo(){
+  const info=detectDevice();
+  const el=document.getElementById('setupModel');
+  if(el){
+    el.innerHTML=`<div style="font-weight:600;color:var(--accent);font-size:13px;margin-bottom:4px">${info.model}</div><div>Screen: ${info.screen}</div><div>KhahanA OS 1.0 (Build 26A329)</div>`;
+  }
+}
+// Call when setup page 4 appears - already handled in nextSetup
+
+// ═══ KHAHANA ID SYSTEM ═══
+window.khahanAID=null;
+function signInKID(){
+  const email=document.getElementById('kidEmail')?.value.trim();
+  if(email){window.khahanAID=email;}
+  else{window.khahanAID='user@khahana.com';} // default if empty
+  nextSetup();
+}
+function skipKID(){
+  window.khahanAID=null;
+  nextSetup();
+}
+function showSignIn(){
+  // Show a mini sign-in dialog inside settings
+  const overlay=document.createElement('div');
+  overlay.id='signInOverlay';
+  overlay.style.cssText='position:absolute;inset:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;';
+  overlay.innerHTML=`
+    <div style="background:#1c1c1e;border-radius:16px;padding:24px;width:100%;max-width:300px;text-align:center;">
+      <svg width="50" height="50" viewBox="0 0 80 80" style="margin-bottom:12px"><circle cx="40" cy="30" r="14" fill="none" stroke="rgba(0,212,170,0.7)" stroke-width="2.5"/><path d="M16 65a24 24 0 0148 0" fill="none" stroke="rgba(0,212,170,0.5)" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:4px">KhahanA ID</div>
+      <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px">Sign in to unlock all features</div>
+      <input id="setKidEmail" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:14px;font-family:inherit;outline:none;margin-bottom:8px;-webkit-user-select:text;user-select:text;" placeholder="Email or username">
+      <input id="setKidPass" style="width:100%;padding:10px 14px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:14px;font-family:inherit;outline:none;-webkit-user-select:text;user-select:text;" type="password" placeholder="Password">
+      <button onclick="settingsSignIn()" style="width:100%;margin-top:14px;padding:12px;background:var(--accent);color:#000;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;">Sign In</button>
+      <div onclick="document.getElementById('signInOverlay')?.remove()" style="margin-top:10px;font-size:12px;color:rgba(255,255,255,0.3);cursor:pointer">Cancel</div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+function settingsSignIn(){
+  const email=document.getElementById('setKidEmail')?.value.trim();
+  window.khahanAID=email||'user@khahana.com';
+  document.getElementById('signInOverlay')?.remove();
+  // Rebuild settings to show the signed in state
+  const c=document.getElementById('c-settings');
+  if(c){c.innerHTML='';c.className='ac set-w';bSet(c);}
+  sndChime();
+}
+
+// ═══ AIRPLANE MODE (actually works) ═══
+let airplaneOn=false;
+function toggleAirplane(el){
+  airplaneOn=!airplaneOn;
+  el.classList.toggle('on');
+  sndTick();
+  const carrier=document.querySelector('.sb-l span');
+  const dots=document.querySelectorAll('.dots div');
+  if(airplaneOn){
+    if(carrier)carrier.textContent='✈ Airplane';
+    dots.forEach(d=>d.style.opacity='0.15');
+    // Disable wifi/bt in settings
+    const wv=document.getElementById('wifiVal');if(wv)wv.textContent='Off';
+    const bv=document.getElementById('btVal');if(bv)bv.textContent='Off';
+  }else{
+    if(carrier)carrier.textContent='KhahanA';
+    dots.forEach((d,i)=>{d.style.opacity=i===4?'0.3':'1';});
+    const wv=document.getElementById('wifiVal');if(wv)wv.textContent='KhahanA-5G';
+    const bv=document.getElementById('btVal');if(bv)bv.textContent='On';
+  }
+  // Also toggle in control center
+  const ccAir=document.querySelectorAll('.cc-tile')[2];
+  if(ccAir){
+    if(airplaneOn){ccAir.classList.add('active');ccAir.querySelector('.cc-val').textContent='On';}
+    else{ccAir.classList.remove('active');ccAir.querySelector('.cc-val').textContent='Off';}
+  }
+}
+
+// ═══ SEARCH / SPOTLIGHT ═══
+const searchItems=[
+  ...APPS.map(a=>({name:a.name,type:'App',bg:a.bg,action:()=>{closeSearch();openApp(a.id);}})),
+  {name:'Wi-Fi',type:'Settings',bg:'#007aff',action:()=>{closeSearch();openApp('settings');}},
+  {name:'Bluetooth',type:'Settings',bg:'#007aff',action:()=>{closeSearch();openApp('settings');}},
+  {name:'Display Resolution',type:'Settings',bg:'#ff9500',action:()=>{closeSearch();openApp('settings');}},
+  {name:'Wallpaper',type:'Settings',bg:'#5856d6',action:()=>{closeSearch();openApp('settings');}},
+  {name:'Privacy',type:'Settings',bg:'#ff2d55',action:()=>{closeSearch();openApp('settings');}},
+];
+
+function renderSearchDefaults(){
+  const r=document.getElementById('searchResults');
+  r.innerHTML=APPS.slice(0,6).map((a,i)=>`<div class="search-item" onclick="closeSearch();openApp('${a.id}')"><div class="search-item-ic" style="background:${a.bg}">${a.svg.replace(/width="\d+"/,'width="15"').replace(/height="\d+"/,'height="15"')}</div><span>${a.name}</span></div>`).join('');
+}
+
+function filterSearch(q){
+  const r=document.getElementById('searchResults');
+  if(!q.trim()){renderSearchDefaults();return;}
+  const matches=searchItems.filter(s=>s.name.toLowerCase().includes(q.toLowerCase()));
+  if(matches.length===0){r.innerHTML='<div style="color:rgba(255,255,255,0.2);padding:20px;text-align:center;font-size:13px">No results found</div>';return;}
+  r.innerHTML=matches.map(s=>`<div class="search-item" data-idx="${searchItems.indexOf(s)}"><div class="search-item-ic" style="background:${s.bg}"></div><div><div style="font-size:14px">${s.name}</div><div style="font-size:10px;opacity:0.35">${s.type}</div></div></div>`).join('');
+  r.querySelectorAll('.search-item').forEach(el=>{
+    el.addEventListener('click',()=>{const idx=parseInt(el.dataset.idx);if(searchItems[idx])searchItems[idx].action();});
+  });
+}
+
+function openSearch(){
+  const sp=document.getElementById('searchPanel');
+  sp.style.display='flex';
+  requestAnimationFrame(()=>{sp.classList.add('open');});
+  renderSearchDefaults();
+  setTimeout(()=>{document.getElementById('searchInput').focus();},350);
+}
+function closeSearch(){
+  const sp=document.getElementById('searchPanel');
+  sp.classList.remove('open');
+  setTimeout(()=>{sp.style.display='none';document.getElementById('searchInput').value='';},300);
+}
+
+// ═══ SWIPE LEFT FOR SEARCH ═══
+let swipeStartX=0,swipeStartY=0,swiping=false;
+document.getElementById('home')?.addEventListener('touchstart',e=>{
+  swipeStartX=e.touches[0].clientX;
+  swipeStartY=e.touches[0].clientY;
+  swiping=true;
+},{passive:true});
+document.getElementById('home')?.addEventListener('touchmove',e=>{
+  if(!swiping)return;
+  const dx=e.touches[0].clientX-swipeStartX;
+  const dy=Math.abs(e.touches[0].clientY-swipeStartY);
+  // Only horizontal swipe
+  if(dy>40){swiping=false;return;}
+  if(dx<-80){swiping=false;openSearch();}
+},{passive:true});
+document.getElementById('home')?.addEventListener('touchend',()=>{swiping=false;},{passive:true});
+// Also support mouse drag for desktop testing
+let mSwX=0,mSw=false;
+document.getElementById('home')?.addEventListener('mousedown',e=>{mSwX=e.clientX;mSw=true;});
+document.addEventListener('mousemove',e=>{if(!mSw)return;if(e.clientX-mSwX<-80){mSw=false;openSearch();}});
+document.addEventListener('mouseup',()=>{mSw=false;});
+</script>
+</body>
+</html>
