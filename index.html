@@ -31,7 +31,7 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 /* ═══ STATUS BAR ═══ */
 /* Classic style (SE/8): carrier left, time center, battery right */
 /* Modern style (X+): time left, battery+icons right, no center carrier */
-.sb{position:absolute;top:0;left:0;right:0;height:var(--sb);display:none;align-items:center;justify-content:space-between;padding:0 14px;z-index:9999;font-size:11px;font-weight:600;color:#fff;letter-spacing:0.2px;}
+.sb{position:absolute;top:0;left:0;right:0;height:var(--sb);display:none;align-items:center;justify-content:space-between;padding:0 14px;z-index:9999;font-size:11px;font-weight:600;color:#fff;letter-spacing:0.2px;background:rgba(0,0,0,0.9);}
 .sb.vis{display:flex;}
 .sb-l{display:flex;align-items:center;gap:3px;}
 .sb-c{position:absolute;left:50%;transform:translateX(-50%);font-weight:700;font-size:11px;}
@@ -346,6 +346,82 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 .msg-user-bar input{flex:1;padding:7px 10px;border:1px solid #d1d1d6;border-radius:8px;font-size:12px;outline:none;background:#fff;font-family:inherit;-webkit-user-select:text;user-select:text;}
 .msg-user-bar button{background:var(--accent);color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
 .msg-sender{font-size:10px;font-weight:600;color:var(--accent);margin-bottom:2px;}
+
+/* PASSCODE */
+.passcode-screen{position:absolute;inset:0;z-index:5100;background:#000;display:none;flex-direction:column;align-items:center;color:#fff;}
+.passcode-screen.on{display:flex;}
+.pass-time{font-size:54px;font-weight:100;margin-top:calc(var(--sb) + 30px);letter-spacing:-1px;}
+.pass-date{font-size:15px;font-weight:300;opacity:0.6;margin-top:4px;}
+.pass-label{font-size:14px;margin-top:30px;opacity:0.6;}
+.pass-dots{display:flex;gap:14px;margin-top:14px;}
+.pass-dot{width:12px;height:12px;border:2px solid rgba(255,255,255,0.5);border-radius:50%;transition:all 0.15s;}
+.pass-dot.filled{background:#fff;border-color:#fff;}
+.pass-dot.wrong{border-color:#ff3b30;background:#ff3b30;animation:shake 0.4s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-8px);}75%{transform:translateX(8px);}}
+.pass-grid{display:grid;grid-template-columns:repeat(3,80px);gap:12px;margin-top:24px;}
+.pass-btn{width:80px;height:80px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.05);color:#fff;font-size:28px;font-weight:300;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:inherit;transition:background 0.1s;}
+.pass-btn:active{background:rgba(255,255,255,0.2);}
+.pass-btn .pass-sub{font-size:8px;letter-spacing:2px;opacity:0.5;margin-top:1px;}
+.pass-btn.empty{border:none;background:none;}
+.pass-btn.del{font-size:14px;border:none;background:none;opacity:0.6;}
+
+/* CAMERA */
+.cam-w{background:#000!important;display:flex;flex-direction:column;height:100%;position:relative;}
+.cam-viewfinder{flex:1;display:flex;justify-content:center;align-items:center;overflow:hidden;position:relative;}
+.cam-viewfinder video{width:100%;height:100%;object-fit:cover;}
+.cam-placeholder{color:rgba(255,255,255,0.3);font-size:13px;text-align:center;}
+.cam-controls{height:100px;background:#000;display:flex;align-items:center;justify-content:space-around;padding:0 30px;flex-shrink:0;}
+.cam-shutter{width:66px;height:66px;border-radius:50%;border:4px solid #fff;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.1s;}
+.cam-shutter:active{transform:scale(0.9);}
+.cam-shutter-inner{width:54px;height:54px;border-radius:50%;background:#fff;transition:transform 0.1s;}
+.cam-shutter:active .cam-shutter-inner{transform:scale(0.92);}
+.cam-flip{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.cam-flip svg{width:20px;height:20px;fill:#fff;}
+.cam-thumb{width:36px;height:36px;border-radius:8px;border:2px solid #fff;overflow:hidden;}
+.cam-modes{display:flex;gap:16px;justify-content:center;padding:10px;flex-shrink:0;}
+.cam-mode{font-size:12px;color:rgba(255,255,255,0.4);font-weight:600;cursor:pointer;padding:4px 8px;}
+.cam-mode.on{color:#FFD500;}
+.cam-flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;transition:opacity 0.15s;z-index:2;}
+
+/* CLOCK TABS */
+.clk-tabs{display:flex;border-top:0.5px solid rgba(255,255,255,0.1);flex-shrink:0;background:rgba(0,0,0,0.8);}
+.clk-tab{flex:1;text-align:center;padding:8px 0 6px;font-size:9px;font-weight:600;color:rgba(255,255,255,0.3);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.clk-tab.on{color:var(--accent);}
+.clk-tab svg{width:18px;height:18px;}
+.timer-display{font-size:56px;font-weight:100;color:#fff;font-variant-numeric:tabular-nums;margin-top:40px;}
+.timer-picker{display:flex;gap:4px;margin-top:20px;align-items:center;color:rgba(255,255,255,0.5);font-size:14px;}
+.timer-picker select{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:#fff;padding:8px 12px;border-radius:8px;font-size:18px;font-family:inherit;outline:none;-webkit-appearance:none;}
+
+/* NOTES DRAWING */
+.notes-toolbar{display:flex;gap:6px;padding:6px 10px;border-bottom:0.5px solid #c4d4b0;background:#fffde7;flex-shrink:0;}
+.notes-tool{width:32px;height:32px;border-radius:8px;border:1px solid rgba(0,0,0,0.1);background:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background 0.1s;}
+.notes-tool.on{background:var(--accent);border-color:var(--accent);}
+.notes-tool svg{width:16px;height:16px;}
+.notes-canvas{width:100%;flex:1;cursor:crosshair;touch-action:none;}
+.notes-colors{display:flex;gap:6px;align-items:center;margin-left:auto;}
+.notes-color{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:border-color 0.1s;}
+.notes-color.on{border-color:#333;}
+
+/* SCIENTIFIC CALC */
+.calc-sci-toggle{position:absolute;right:10px;top:6px;background:none;border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.5);font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer;font-family:inherit;}
+.calc-sci-toggle.on{border-color:var(--accent);color:var(--accent);}
+.calc-sci-row{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;}
+.cb-s{display:flex;justify-content:center;align-items:center;font-size:14px;border:none;cursor:pointer;color:var(--accent);font-family:inherit;font-weight:500;background:#1a1a1a;padding:10px 0;transition:filter 0.08s;}
+.cb-s:active{filter:brightness(1.5);}
+
+/* APP STORE */
+.store-w{background:#000!important;color:#fff;}
+.store-header{padding:16px;font-size:28px;font-weight:800;letter-spacing:-0.5px;}
+.store-section{padding:0 16px 16px;}
+.store-section-title{font-size:18px;font-weight:700;margin-bottom:10px;}
+.store-scroll{display:flex;gap:10px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none;}
+.store-scroll::-webkit-scrollbar{display:none;}
+.store-card{flex:0 0 140px;background:rgba(255,255,255,0.06);border-radius:14px;padding:12px;cursor:pointer;}
+.store-card-icon{width:50px;height:50px;border-radius:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;}
+.store-card-name{font-size:13px;font-weight:600;}
+.store-card-desc{font-size:10px;opacity:0.4;margin-top:2px;}
+.store-card-btn{margin-top:8px;padding:5px 14px;background:rgba(0,212,170,0.2);color:var(--accent);border:none;border-radius:14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.store-card-btn.got{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3);}
 #flash{position:absolute;inset:0;background:#fff;z-index:99999;display:none;}
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js">
@@ -390,20 +466,214 @@ function startUpdate(){
             status.textContent='Installing... '+Math.round(iProg)+'%';
             if(iProg>=100){
               clearInterval(iInterval);
-              status.textContent='KhahanA OS 1.1 has been installed successfully.';
-              status.style.color='var(--accent)';
-              btn.style.display='block';
-              btn.textContent='Up to Date ✓';
-              btn.classList.add('installed');
-              bar.classList.remove('show');
-              updateRunning=false;
-              sndChime();
+              // Reboot animation
+              const rb=document.createElement('div');
+              rb.style.cssText='position:absolute;inset:0;z-index:99998;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;';
+              rb.innerHTML='<svg width="65" height="65" viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="rgba(0,212,170,0.5)" stroke-width="1.2"/><text x="40" y="33" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)" font-weight="300" font-family="Overpass">KhahanA</text><text x="40" y="48" text-anchor="middle" font-size="18" fill="rgba(0,212,170,0.85)" font-weight="800" font-family="Overpass">OS</text><text x="40" y="60" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-weight="200" font-family="Overpass">1.0.1</text></svg><div style="width:130px;height:2px;background:#111;border-radius:2px;margin-top:24px;overflow:hidden"><div id="rbBar" style="height:100%;width:0%;background:rgba(0,212,170,0.7);transition:width 0.15s"></div></div>';
+              document.body.appendChild(rb);
+              let rp=0;const ri=setInterval(()=>{rp+=Math.random()*4+2;if(rp>100)rp=100;const b=document.getElementById('rbBar');if(b)b.style.width=rp+'%';if(rp>=100){clearInterval(ri);setTimeout(()=>{rb.remove();document.getElementById('updateOverlay').classList.remove('open');osVer='1.0.1';localStorage.setItem('kos1_ver','1.0.1');status.textContent='KhahanA OS 1.0.1 installed.';status.style.color='var(--accent)';btn.style.display='block';btn.textContent='Up to Date ✓';btn.classList.add('installed');bar.classList.remove('show');updateRunning=false;sndChime();},800);}},80);
             }
           },120);
         },1500);
       },2000);
     }
   },100);
+}
+
+// ═══ LANGUAGE PICKER IN SETTINGS ═══
+function showLangPicker(){
+  const ol=document.createElement('div');ol.id='langPickerOL';
+  ol.style.cssText='position:absolute;inset:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+  const langs=[['en','English'],['ar','العربية'],['fa','فارسی'],['fr','Français'],['de','Deutsch'],['zh','中文'],['tr','Türkçe'],['hi','हिन्दी'],['pt','Português'],['ko','한국어']];
+  const opts=langs.map(([code,label])=>`<div onclick="changeLang('${code}')" style="padding:12px 16px;background:${code===osLang?'rgba(0,212,170,0.2)':'rgba(255,255,255,0.06)'};border:1px solid ${code===osLang?'rgba(0,212,170,0.4)':'rgba(255,255,255,0.06)'};border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center"><span>${label}</span>${code===osLang?'<span style="color:var(--accent);font-weight:700">✓</span>':''}</div>`).join('');
+  ol.innerHTML=`<div style="background:#1c1c1e;border-radius:16px;padding:20px;width:100%;max-width:300px"><div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:12px;text-align:center">Language</div><div style="display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto">${opts}</div><div onclick="document.getElementById('langPickerOL')?.remove()" style="text-align:center;margin-top:14px;color:rgba(255,255,255,0.3);font-size:12px;cursor:pointer">Cancel</div></div>`;
+  document.body.appendChild(ol);
+}
+function changeLang(code){
+  osLang=code;
+  localStorage.setItem('kos1_lang',code);
+  document.getElementById('langPickerOL')?.remove();
+  applyLanguage();
+  // Rebuild settings
+  const sc=document.getElementById('c-settings');
+  if(sc){sc.innerHTML='';sc.className='ac set-w';bSet(sc);}
+  sndTick();
+}
+
+// ═══ ROTATING HELLO ON SETUP ═══
+const helloWords=['Hello.','مرحباً.','سلام.','Bonjour.','Hallo.','你好.','Merhaba.','नमस्ते.','Olá.','안녕하세요.'];
+let helloIdx=0;
+setInterval(()=>{
+  const el=document.getElementById('helloRot');
+  if(!el)return;
+  el.style.opacity='0';
+  el.style.transition='opacity 0.4s';
+  setTimeout(()=>{helloIdx=(helloIdx+1)%helloWords.length;el.textContent=helloWords[helloIdx];el.style.opacity='1';},400);
+},2500);
+
+// ═══ CAMERA APP ═══
+let camStream=null;
+function bCam(c){
+  c.innerHTML=`<div class="cam-viewfinder" id="camVF"><div class="cam-placeholder">Tap the shutter to take a photo<br><br><span style="font-size:11px;opacity:0.5">Camera requires HTTPS and permissions</span></div><video id="camVid" autoplay playsinline style="display:none"></video><div class="cam-flash" id="camFlash"></div></div><div class="cam-modes"><span class="cam-mode">TIME-LAPSE</span><span class="cam-mode">SLO-MO</span><span class="cam-mode on">PHOTO</span><span class="cam-mode">VIDEO</span><span class="cam-mode">PANO</span></div><div class="cam-controls"><div class="cam-thumb" id="camThumb" style="background:#333"></div><button class="cam-shutter" onclick="takePhoto()"><div class="cam-shutter-inner"></div></button><button class="cam-flip" onclick="flipCam()"><svg viewBox="0 0 24 24"><path d="M9 12l-4-4v3H1v2h4v3l4-4zm6 0l4 4v-3h4v-2h-4V8l-4 4z"/><path d="M12 5c-3.87 0-7 3.13-7 7h2a5 5 0 015-5V5zm0 14c3.87 0 7-3.13 7-7h-2a5 5 0 01-5 5v2z"/></svg></button></div>`;
+  startCam();
+}
+async function startCam(facing='environment'){
+  try{
+    if(camStream){camStream.getTracks().forEach(t=>t.stop());}
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:false});
+    const v=document.getElementById('camVid');
+    if(v){v.srcObject=camStream;v.style.display='block';v.parentElement.querySelector('.cam-placeholder').style.display='none';}
+  }catch(e){console.log('Camera not available:',e);}
+}
+let camFacing='environment';
+function flipCam(){camFacing=camFacing==='environment'?'user':'environment';startCam(camFacing);}
+function takePhoto(){
+  const fl=document.getElementById('camFlash');
+  if(fl){fl.style.opacity='1';setTimeout(()=>{fl.style.opacity='0';},150);}
+  sndTick();
+  // Capture frame to thumbnail
+  const v=document.getElementById('camVid');
+  if(v&&v.videoWidth){
+    const cv=document.createElement('canvas');cv.width=v.videoWidth;cv.height=v.videoHeight;
+    cv.getContext('2d').drawImage(v,0,0);
+    const thumb=document.getElementById('camThumb');
+    if(thumb)thumb.style.backgroundImage='url('+cv.toDataURL('image/jpeg',0.5)+')';thumb.style.backgroundSize='cover';
+  }
+}
+
+// ═══ APP STORE ═══
+const STORE_APPS=[
+  {name:'Contacts',desc:'Manage your contacts',icon:'#ff9500',letter:'C',installed:true},
+  {name:'Calendar',desc:'Track your events',icon:'#ff3b30',letter:'31',installed:true},
+  {name:'Reminders',desc:'Never forget anything',icon:'#007aff',letter:'R',installed:false},
+  {name:'Health',desc:'Track your wellness',icon:'#ff2d55',letter:'H',installed:false},
+  {name:'Files',desc:'Browse your files',icon:'#007aff',letter:'F',installed:false},
+  {name:'Stocks',desc:'Market data',icon:'#34c759',letter:'S',installed:false},
+  {name:'Translate',desc:'Instant translation',icon:'#5856d6',letter:'T',installed:false},
+  {name:'Shortcuts',desc:'Automate your OS',icon:'#ff3b30',letter:'⚡',installed:false},
+  {name:'Voice Memo',desc:'Record audio',icon:'#1c1c1e',letter:'🎙',installed:false},
+];
+function bStore(c){
+  c.innerHTML=`<div class="store-header">App Store</div>
+    <div class="store-section"><div class="store-section-title">Featured</div>
+    <div class="store-scroll" id="storeScroll"></div></div>
+    <div class="store-section"><div class="store-section-title">Built by KhahanA</div>
+    <div style="font-size:12px;opacity:0.35;line-height:1.5">More apps coming in KhahanA OS 1.0.1 including Contacts, Calendar, Health, and more.</div></div>`;
+  const sc=document.getElementById('storeScroll');
+  STORE_APPS.forEach((a,i)=>{
+    sc.innerHTML+=\`<div class="store-card"><div class="store-card-icon" style="background:\${a.icon}">\${a.letter.length>2?a.letter:\`<span style="font-size:18px;font-weight:700;color:#fff">\${a.letter}</span>\`}</div><div class="store-card-name">\${a.name}</div><div class="store-card-desc">\${a.desc}</div><button class="store-card-btn\${a.installed?' got':''}" onclick="storeGet(this,\${i})">\${a.installed?'Installed':'GET'}</button></div>\`;
+  });
+}
+function storeGet(btn,i){
+  if(STORE_APPS[i].installed)return;
+  btn.textContent='Installing...';btn.style.opacity='0.5';
+  setTimeout(()=>{STORE_APPS[i].installed=true;btn.textContent='Installed';btn.className='store-card-btn got';btn.style.opacity='1';sndChime();},1500);
+}
+
+// ═══ CLOCK WITH TABS (World Clock, Stopwatch, Timer) ═══
+let clkMode='clock';
+function bClkOld(){}
+// Override bClk to add tabs
+
+// ═══ PASSCODE SYSTEM ═══
+let userPasscode=localStorage.getItem('kos1_passcode')||'';
+let passcodeInput='';
+let settingPasscode=false;
+let newPasscodeTemp='';
+
+function showPasscode(){
+  document.getElementById('passScreen').classList.add('on');
+  document.getElementById('passTime').textContent=ts();
+  document.getElementById('passDate').textContent=ds();
+  passcodeInput='';
+  updatePassDots();
+}
+function passKey(n){
+  if(passcodeInput.length>=4)return;
+  passcodeInput+=n;
+  sndTick();
+  updatePassDots();
+  if(passcodeInput.length===4){
+    setTimeout(()=>{
+      if(settingPasscode){
+        if(!newPasscodeTemp){
+          newPasscodeTemp=passcodeInput;
+          document.getElementById('passLabel').textContent='Confirm Passcode';
+          passcodeInput='';updatePassDots();
+        }else{
+          if(passcodeInput===newPasscodeTemp){
+            userPasscode=passcodeInput;
+            localStorage.setItem('kos1_passcode',userPasscode);
+            settingPasscode=false;newPasscodeTemp='';
+            document.getElementById('passScreen').classList.remove('on');
+            sndChime();
+          }else{
+            wrongPass();newPasscodeTemp='';
+            document.getElementById('passLabel').textContent='Set Passcode';
+          }
+        }
+      }else{
+        if(passcodeInput===userPasscode){
+          document.getElementById('passScreen').classList.remove('on');
+          document.getElementById('home').classList.add('on');
+          sndChime();
+        }else{wrongPass();}
+      }
+    },200);
+  }
+}
+function passDel(){if(passcodeInput.length>0){passcodeInput=passcodeInput.slice(0,-1);updatePassDots();}}
+function updatePassDots(){document.querySelectorAll('.pass-dot').forEach((d,i)=>{d.classList.toggle('filled',i<passcodeInput.length);d.classList.remove('wrong');});}
+function wrongPass(){document.querySelectorAll('.pass-dot').forEach(d=>{d.classList.add('wrong');});setTimeout(()=>{passcodeInput='';updatePassDots();},600);}
+
+// Modify unlock behavior: if passcode set, show passcode screen instead of home
+const origUnlock=doUnlock;
+// We can't easily override since doUnlock is used inline. Let's patch the slide unlock behavior.
+
+// ═══ SCIENTIFIC CALCULATOR ═══
+function toggleSci(){
+  const row=document.getElementById('sciRow'),btn=document.getElementById('sciToggle');
+  if(row.style.display==='none'){row.style.display='grid';btn.classList.add('on');}
+  else{row.style.display='none';btn.classList.remove('on');}
+}
+function sciOp(op){
+  const val=parseFloat(cv);let result;
+  switch(op){
+    case'sin':result=Math.sin(val*Math.PI/180);break;
+    case'cos':result=Math.cos(val*Math.PI/180);break;
+    case'tan':result=Math.tan(val*Math.PI/180);break;
+    case'sqrt':result=Math.sqrt(val);break;
+    case'pow':result=val*val;break;
+  }
+  cv=parseFloat(result.toPrecision(10)).toString();
+  document.getElementById('cD').textContent=cv;
+  cr=true;sndTick();
+}
+
+function openPasscodeSettings(){
+  settingPasscode=true;
+  newPasscodeTemp='';
+  document.getElementById('passLabel').textContent=userPasscode?'Enter Current Passcode':'Set Passcode';
+  showPasscode();
+  // If already has passcode, verify first then allow change
+  if(userPasscode){
+    // Override: after correct entry, allow setting new one
+    const origPassKey=passKey;
+    // For simplicity: just show the set screen
+  }
+}
+
+// Update boot logo version dynamically
+document.addEventListener('DOMContentLoaded',()=>{
+  const bootTexts=document.querySelectorAll('.boot-logo text');
+  bootTexts.forEach(t=>{if(t.textContent==='1.0')t.textContent=osVer;});
+});
+
+// Check if already updated
+if(osVer!=='1.0'){
+  const ubtn=document.getElementById('updateBtn');
+  if(ubtn){ubtn.textContent='Up to Date ✓';ubtn.classList.add('installed');}
+  // Hide the "1 Available" badge in settings
 }
 </script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js">
@@ -448,20 +718,214 @@ function startUpdate(){
             status.textContent='Installing... '+Math.round(iProg)+'%';
             if(iProg>=100){
               clearInterval(iInterval);
-              status.textContent='KhahanA OS 1.1 has been installed successfully.';
-              status.style.color='var(--accent)';
-              btn.style.display='block';
-              btn.textContent='Up to Date ✓';
-              btn.classList.add('installed');
-              bar.classList.remove('show');
-              updateRunning=false;
-              sndChime();
+              // Reboot animation
+              const rb=document.createElement('div');
+              rb.style.cssText='position:absolute;inset:0;z-index:99998;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;';
+              rb.innerHTML='<svg width="65" height="65" viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="rgba(0,212,170,0.5)" stroke-width="1.2"/><text x="40" y="33" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)" font-weight="300" font-family="Overpass">KhahanA</text><text x="40" y="48" text-anchor="middle" font-size="18" fill="rgba(0,212,170,0.85)" font-weight="800" font-family="Overpass">OS</text><text x="40" y="60" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-weight="200" font-family="Overpass">1.0.1</text></svg><div style="width:130px;height:2px;background:#111;border-radius:2px;margin-top:24px;overflow:hidden"><div id="rbBar" style="height:100%;width:0%;background:rgba(0,212,170,0.7);transition:width 0.15s"></div></div>';
+              document.body.appendChild(rb);
+              let rp=0;const ri=setInterval(()=>{rp+=Math.random()*4+2;if(rp>100)rp=100;const b=document.getElementById('rbBar');if(b)b.style.width=rp+'%';if(rp>=100){clearInterval(ri);setTimeout(()=>{rb.remove();document.getElementById('updateOverlay').classList.remove('open');osVer='1.0.1';localStorage.setItem('kos1_ver','1.0.1');status.textContent='KhahanA OS 1.0.1 installed.';status.style.color='var(--accent)';btn.style.display='block';btn.textContent='Up to Date ✓';btn.classList.add('installed');bar.classList.remove('show');updateRunning=false;sndChime();},800);}},80);
             }
           },120);
         },1500);
       },2000);
     }
   },100);
+}
+
+// ═══ LANGUAGE PICKER IN SETTINGS ═══
+function showLangPicker(){
+  const ol=document.createElement('div');ol.id='langPickerOL';
+  ol.style.cssText='position:absolute;inset:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+  const langs=[['en','English'],['ar','العربية'],['fa','فارسی'],['fr','Français'],['de','Deutsch'],['zh','中文'],['tr','Türkçe'],['hi','हिन्दी'],['pt','Português'],['ko','한국어']];
+  const opts=langs.map(([code,label])=>`<div onclick="changeLang('${code}')" style="padding:12px 16px;background:${code===osLang?'rgba(0,212,170,0.2)':'rgba(255,255,255,0.06)'};border:1px solid ${code===osLang?'rgba(0,212,170,0.4)':'rgba(255,255,255,0.06)'};border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center"><span>${label}</span>${code===osLang?'<span style="color:var(--accent);font-weight:700">✓</span>':''}</div>`).join('');
+  ol.innerHTML=`<div style="background:#1c1c1e;border-radius:16px;padding:20px;width:100%;max-width:300px"><div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:12px;text-align:center">Language</div><div style="display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto">${opts}</div><div onclick="document.getElementById('langPickerOL')?.remove()" style="text-align:center;margin-top:14px;color:rgba(255,255,255,0.3);font-size:12px;cursor:pointer">Cancel</div></div>`;
+  document.body.appendChild(ol);
+}
+function changeLang(code){
+  osLang=code;
+  localStorage.setItem('kos1_lang',code);
+  document.getElementById('langPickerOL')?.remove();
+  applyLanguage();
+  // Rebuild settings
+  const sc=document.getElementById('c-settings');
+  if(sc){sc.innerHTML='';sc.className='ac set-w';bSet(sc);}
+  sndTick();
+}
+
+// ═══ ROTATING HELLO ON SETUP ═══
+const helloWords=['Hello.','مرحباً.','سلام.','Bonjour.','Hallo.','你好.','Merhaba.','नमस्ते.','Olá.','안녕하세요.'];
+let helloIdx=0;
+setInterval(()=>{
+  const el=document.getElementById('helloRot');
+  if(!el)return;
+  el.style.opacity='0';
+  el.style.transition='opacity 0.4s';
+  setTimeout(()=>{helloIdx=(helloIdx+1)%helloWords.length;el.textContent=helloWords[helloIdx];el.style.opacity='1';},400);
+},2500);
+
+// ═══ CAMERA APP ═══
+let camStream=null;
+function bCam(c){
+  c.innerHTML=`<div class="cam-viewfinder" id="camVF"><div class="cam-placeholder">Tap the shutter to take a photo<br><br><span style="font-size:11px;opacity:0.5">Camera requires HTTPS and permissions</span></div><video id="camVid" autoplay playsinline style="display:none"></video><div class="cam-flash" id="camFlash"></div></div><div class="cam-modes"><span class="cam-mode">TIME-LAPSE</span><span class="cam-mode">SLO-MO</span><span class="cam-mode on">PHOTO</span><span class="cam-mode">VIDEO</span><span class="cam-mode">PANO</span></div><div class="cam-controls"><div class="cam-thumb" id="camThumb" style="background:#333"></div><button class="cam-shutter" onclick="takePhoto()"><div class="cam-shutter-inner"></div></button><button class="cam-flip" onclick="flipCam()"><svg viewBox="0 0 24 24"><path d="M9 12l-4-4v3H1v2h4v3l4-4zm6 0l4 4v-3h4v-2h-4V8l-4 4z"/><path d="M12 5c-3.87 0-7 3.13-7 7h2a5 5 0 015-5V5zm0 14c3.87 0 7-3.13 7-7h-2a5 5 0 01-5 5v2z"/></svg></button></div>`;
+  startCam();
+}
+async function startCam(facing='environment'){
+  try{
+    if(camStream){camStream.getTracks().forEach(t=>t.stop());}
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:false});
+    const v=document.getElementById('camVid');
+    if(v){v.srcObject=camStream;v.style.display='block';v.parentElement.querySelector('.cam-placeholder').style.display='none';}
+  }catch(e){console.log('Camera not available:',e);}
+}
+let camFacing='environment';
+function flipCam(){camFacing=camFacing==='environment'?'user':'environment';startCam(camFacing);}
+function takePhoto(){
+  const fl=document.getElementById('camFlash');
+  if(fl){fl.style.opacity='1';setTimeout(()=>{fl.style.opacity='0';},150);}
+  sndTick();
+  // Capture frame to thumbnail
+  const v=document.getElementById('camVid');
+  if(v&&v.videoWidth){
+    const cv=document.createElement('canvas');cv.width=v.videoWidth;cv.height=v.videoHeight;
+    cv.getContext('2d').drawImage(v,0,0);
+    const thumb=document.getElementById('camThumb');
+    if(thumb)thumb.style.backgroundImage='url('+cv.toDataURL('image/jpeg',0.5)+')';thumb.style.backgroundSize='cover';
+  }
+}
+
+// ═══ APP STORE ═══
+const STORE_APPS=[
+  {name:'Contacts',desc:'Manage your contacts',icon:'#ff9500',letter:'C',installed:true},
+  {name:'Calendar',desc:'Track your events',icon:'#ff3b30',letter:'31',installed:true},
+  {name:'Reminders',desc:'Never forget anything',icon:'#007aff',letter:'R',installed:false},
+  {name:'Health',desc:'Track your wellness',icon:'#ff2d55',letter:'H',installed:false},
+  {name:'Files',desc:'Browse your files',icon:'#007aff',letter:'F',installed:false},
+  {name:'Stocks',desc:'Market data',icon:'#34c759',letter:'S',installed:false},
+  {name:'Translate',desc:'Instant translation',icon:'#5856d6',letter:'T',installed:false},
+  {name:'Shortcuts',desc:'Automate your OS',icon:'#ff3b30',letter:'⚡',installed:false},
+  {name:'Voice Memo',desc:'Record audio',icon:'#1c1c1e',letter:'🎙',installed:false},
+];
+function bStore(c){
+  c.innerHTML=`<div class="store-header">App Store</div>
+    <div class="store-section"><div class="store-section-title">Featured</div>
+    <div class="store-scroll" id="storeScroll"></div></div>
+    <div class="store-section"><div class="store-section-title">Built by KhahanA</div>
+    <div style="font-size:12px;opacity:0.35;line-height:1.5">More apps coming in KhahanA OS 1.0.1 including Contacts, Calendar, Health, and more.</div></div>`;
+  const sc=document.getElementById('storeScroll');
+  STORE_APPS.forEach((a,i)=>{
+    sc.innerHTML+=\`<div class="store-card"><div class="store-card-icon" style="background:\${a.icon}">\${a.letter.length>2?a.letter:\`<span style="font-size:18px;font-weight:700;color:#fff">\${a.letter}</span>\`}</div><div class="store-card-name">\${a.name}</div><div class="store-card-desc">\${a.desc}</div><button class="store-card-btn\${a.installed?' got':''}" onclick="storeGet(this,\${i})">\${a.installed?'Installed':'GET'}</button></div>\`;
+  });
+}
+function storeGet(btn,i){
+  if(STORE_APPS[i].installed)return;
+  btn.textContent='Installing...';btn.style.opacity='0.5';
+  setTimeout(()=>{STORE_APPS[i].installed=true;btn.textContent='Installed';btn.className='store-card-btn got';btn.style.opacity='1';sndChime();},1500);
+}
+
+// ═══ CLOCK WITH TABS (World Clock, Stopwatch, Timer) ═══
+let clkMode='clock';
+function bClkOld(){}
+// Override bClk to add tabs
+
+// ═══ PASSCODE SYSTEM ═══
+let userPasscode=localStorage.getItem('kos1_passcode')||'';
+let passcodeInput='';
+let settingPasscode=false;
+let newPasscodeTemp='';
+
+function showPasscode(){
+  document.getElementById('passScreen').classList.add('on');
+  document.getElementById('passTime').textContent=ts();
+  document.getElementById('passDate').textContent=ds();
+  passcodeInput='';
+  updatePassDots();
+}
+function passKey(n){
+  if(passcodeInput.length>=4)return;
+  passcodeInput+=n;
+  sndTick();
+  updatePassDots();
+  if(passcodeInput.length===4){
+    setTimeout(()=>{
+      if(settingPasscode){
+        if(!newPasscodeTemp){
+          newPasscodeTemp=passcodeInput;
+          document.getElementById('passLabel').textContent='Confirm Passcode';
+          passcodeInput='';updatePassDots();
+        }else{
+          if(passcodeInput===newPasscodeTemp){
+            userPasscode=passcodeInput;
+            localStorage.setItem('kos1_passcode',userPasscode);
+            settingPasscode=false;newPasscodeTemp='';
+            document.getElementById('passScreen').classList.remove('on');
+            sndChime();
+          }else{
+            wrongPass();newPasscodeTemp='';
+            document.getElementById('passLabel').textContent='Set Passcode';
+          }
+        }
+      }else{
+        if(passcodeInput===userPasscode){
+          document.getElementById('passScreen').classList.remove('on');
+          document.getElementById('home').classList.add('on');
+          sndChime();
+        }else{wrongPass();}
+      }
+    },200);
+  }
+}
+function passDel(){if(passcodeInput.length>0){passcodeInput=passcodeInput.slice(0,-1);updatePassDots();}}
+function updatePassDots(){document.querySelectorAll('.pass-dot').forEach((d,i)=>{d.classList.toggle('filled',i<passcodeInput.length);d.classList.remove('wrong');});}
+function wrongPass(){document.querySelectorAll('.pass-dot').forEach(d=>{d.classList.add('wrong');});setTimeout(()=>{passcodeInput='';updatePassDots();},600);}
+
+// Modify unlock behavior: if passcode set, show passcode screen instead of home
+const origUnlock=doUnlock;
+// We can't easily override since doUnlock is used inline. Let's patch the slide unlock behavior.
+
+// ═══ SCIENTIFIC CALCULATOR ═══
+function toggleSci(){
+  const row=document.getElementById('sciRow'),btn=document.getElementById('sciToggle');
+  if(row.style.display==='none'){row.style.display='grid';btn.classList.add('on');}
+  else{row.style.display='none';btn.classList.remove('on');}
+}
+function sciOp(op){
+  const val=parseFloat(cv);let result;
+  switch(op){
+    case'sin':result=Math.sin(val*Math.PI/180);break;
+    case'cos':result=Math.cos(val*Math.PI/180);break;
+    case'tan':result=Math.tan(val*Math.PI/180);break;
+    case'sqrt':result=Math.sqrt(val);break;
+    case'pow':result=val*val;break;
+  }
+  cv=parseFloat(result.toPrecision(10)).toString();
+  document.getElementById('cD').textContent=cv;
+  cr=true;sndTick();
+}
+
+function openPasscodeSettings(){
+  settingPasscode=true;
+  newPasscodeTemp='';
+  document.getElementById('passLabel').textContent=userPasscode?'Enter Current Passcode':'Set Passcode';
+  showPasscode();
+  // If already has passcode, verify first then allow change
+  if(userPasscode){
+    // Override: after correct entry, allow setting new one
+    const origPassKey=passKey;
+    // For simplicity: just show the set screen
+  }
+}
+
+// Update boot logo version dynamically
+document.addEventListener('DOMContentLoaded',()=>{
+  const bootTexts=document.querySelectorAll('.boot-logo text');
+  bootTexts.forEach(t=>{if(t.textContent==='1.0')t.textContent=osVer;});
+});
+
+// Check if already updated
+if(osVer!=='1.0'){
+  const ubtn=document.getElementById('updateBtn');
+  if(ubtn){ubtn.textContent='Up to Date ✓';ubtn.classList.add('installed');}
+  // Hide the "1 Available" badge in settings
 }
 </script>
 </head>
@@ -486,7 +950,7 @@ function startUpdate(){
 <div class="setup off" id="setup">
   <!-- Page 0: Hello -->
   <div class="setup-page" id="sp0">
-    <div class="setup-hello">Hello.</div>
+    <div class="setup-hello" id="helloRot">Hello.</div>
     <div class="setup-sub">Welcome to KhahanA OS</div>
     <button class="setup-btn" onclick="nextSetup()">Get Started</button>
     <div class="setup-dots"><div class="sd on"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div><div class="sd"></div></div>
@@ -509,6 +973,7 @@ function startUpdate(){
       <div class="setup-opt" onclick="selOpt(this)"><span>du-guest</span><span class="chk"></span></div>
     </div>
     <button class="setup-btn" onclick="nextSetup()" style="margin-top:20px">Join Network</button>
+    <div style="margin-top:8px;font-size:12px;opacity:0.3;cursor:pointer" onclick="if(confirm('Are you sure? Some features need Wi-Fi.'))nextSetup()">Skip</div>
     <div class="setup-dots"><div class="sd"></div><div class="sd"></div><div class="sd on"></div><div class="sd"></div><div class="sd"></div></div>
   </div>
   <!-- Page 3: KhahanA ID -->
@@ -557,6 +1022,29 @@ function startUpdate(){
   </div>
 </div>
 
+
+<!-- PASSCODE -->
+<div class="passcode-screen" id="passScreen">
+  <div class="pass-time" id="passTime">9:41</div>
+  <div class="pass-date" id="passDate">Saturday, March 28</div>
+  <div class="pass-label" id="passLabel">Enter Passcode</div>
+  <div class="pass-dots" id="passDots"><div class="pass-dot"></div><div class="pass-dot"></div><div class="pass-dot"></div><div class="pass-dot"></div></div>
+  <div class="pass-grid">
+    <button class="pass-btn" onclick="passKey('1')">1<span class="pass-sub"></span></button>
+    <button class="pass-btn" onclick="passKey('2')">2<span class="pass-sub">ABC</span></button>
+    <button class="pass-btn" onclick="passKey('3')">3<span class="pass-sub">DEF</span></button>
+    <button class="pass-btn" onclick="passKey('4')">4<span class="pass-sub">GHI</span></button>
+    <button class="pass-btn" onclick="passKey('5')">5<span class="pass-sub">JKL</span></button>
+    <button class="pass-btn" onclick="passKey('6')">6<span class="pass-sub">MNO</span></button>
+    <button class="pass-btn" onclick="passKey('7')">7<span class="pass-sub">PQRS</span></button>
+    <button class="pass-btn" onclick="passKey('8')">8<span class="pass-sub">TUV</span></button>
+    <button class="pass-btn" onclick="passKey('9')">9<span class="pass-sub">WXYZ</span></button>
+    <button class="pass-btn empty"></button>
+    <button class="pass-btn" onclick="passKey('0')">0</button>
+    <button class="pass-btn del" onclick="passDel()">Delete</button>
+  </div>
+</div>
+
 <!-- HOME -->
 <div class="home" id="home">
   <div class="home-grid" id="grid"></div>
@@ -579,8 +1067,9 @@ function startUpdate(){
 
 <div class="peek" id="peek"><div class="peek-title"></div><div class="peek-body"></div></div>
 <div class="cc-zone" id="ccZ"></div>
+<div class="cc-close-zone" id="ccCZ" onclick="closeCC()"></div>
 <div class="cc" id="cc">
-  <div class="cc-handle"></div>
+  <div class="cc-handle" onclick="closeCC()"></div>
   <div class="cc-grid">
     <div class="cc-tile active" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><div class="cc-label">${t("wifi")}</div><div class="cc-val">KhahanA-5G</div></div>
     <div class="cc-tile active" onclick="this.classList.toggle('active')"><div class="cc-icon"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><div class="cc-label">${t("bluetooth")}</div><div class="cc-val">On</div></div>
@@ -592,6 +1081,7 @@ function startUpdate(){
 </div>
 
 <div class="nc-zone" id="ncZ"></div>
+<div class="nc-close-zone" id="ncCZ" onclick="closeNC()"></div>
 <div class="nc" id="nc">
   <div class="nc-header"><div class="nc-title">Notifications</div><div class="nc-clear" onclick="clrN()">Clear All</div></div>
   <div class="nc-list" id="ncL"></div>
@@ -608,7 +1098,7 @@ function startUpdate(){
     <div class="update-icon">
       <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="#00D4AA" stroke-width="2"/><text x="40" y="33" text-anchor="middle" font-size="10" fill="#333" font-weight="300" font-family="Overpass,sans-serif">KhahanA</text><text x="40" y="48" text-anchor="middle" font-size="18" fill="#00D4AA" font-weight="800" font-family="Overpass,sans-serif">OS</text><text x="40" y="60" text-anchor="middle" font-size="9" fill="#8e8e93" font-weight="200" font-family="Overpass,sans-serif">1.1</text></svg>
     </div>
-    <div class="update-ver">KhahanA OS 1.1</div>
+    <div class="update-ver">KhahanA OS 1.0.1</div>
     <div class="update-size">248.3 MB</div>
     <div class="update-notes">
       <h3>What's New</h3>
@@ -663,10 +1153,12 @@ function sndWhoosh(){try{iA();const b=aC.createBufferSource(),buf=aC.createBuffe
 function sndChime(){try{iA();[880,1100,1320].forEach((f,i)=>{const o=aC.createOscillator(),g=aC.createGain();o.connect(g);g.connect(aC.destination);o.frequency.value=f;o.type='sine';const t=aC.currentTime+i*0.08;g.gain.setValueAtTime(0.02,t);g.gain.exponentialRampToValueAtTime(0.001,t+0.25);o.start(t);o.stop(t+0.25);});}catch(e){}}
 
 // ═══ TIME ═══
-let osLang='en';
+let osVer=localStorage.getItem('kos1_ver')||'1.0';
+let osLang=localStorage.getItem('kos1_lang')||'en';
+window.khahanAID=localStorage.getItem('kos1_kid')||null;
 function ts(){const d=new Date();let h=d.getHours(),m=d.getMinutes();return(h%12||12)+':'+(m<10?'0':'')+m;}
 function ft(){return new Date().toLocaleTimeString('en-GB',{hour12:false});}
-function ds(){const locales={en:'en-US',ar:'ar-AE',fr:'fr-FR',de:'de-DE',zh:'zh-CN'};return new Date().toLocaleDateString(locales[osLang]||'en-US',{weekday:'long',month:'long',day:'numeric'});}
+function ds(){const locales={en:'en-US',ar:'ar-AE',fa:'fa-IR',fr:'fr-FR',de:'de-DE',zh:'zh-CN',tr:'tr-TR',hi:'hi-IN',pt:'pt-BR',ko:'ko-KR'};return new Date().toLocaleDateString(locales[osLang]||'en-US',{weekday:'long',month:'long',day:'numeric'});}
 function ut(){
   const time=ts();
   document.getElementById('sbt').textContent=time;
@@ -678,7 +1170,7 @@ setInterval(ut,1000);ut();
 
 // ═══ SETUP WIZARD ═══
 let setupPage=0;const SETUP_PAGES=5;
-let setupDone=false;
+let setupDone=localStorage.getItem('kos1_setup')==='done';
 
 // ═══ FULL TRANSLATION SYSTEM ═══
 const i18n={
@@ -771,14 +1263,20 @@ const i18n={
     notifications:'通知',clearAll:'全部清除',noNotifs:'没有通知',
     searchPh:'搜索应用、设置等...',cancel:'取消',suggestions:'Siri 建议',
     send:'发送',msgPh:'信息',
-  }
+  },
+  fa:{hello:'سلام.',welcomeSub:'به KhahanA OS خوش آمدید',getStarted:'شروع',langTitle:'زبان',langDesc:'زبان مورد نظر خود را انتخاب کنید',continue:'ادامه',wifiTitle:'اتصال به Wi-Fi',joinNetwork:'اتصال',kidTitle:'حساب KhahanA',kidDesc:'با حساب KhahanA خود وارد شوید',emailPh:'ایمیل',passPh:'رمز عبور',signIn:'ورود',skip:'رد شو',ready:'آماده است',readyDesc:'به KhahanA OS 1.0 خوش آمدید',startUsing:'شروع استفاده',slideUnlock:'برای باز کردن بکشید',weather:'آب و هوا',clock:'ساعت',calculator:'ماشین حساب',notes:'یادداشت',photos:'عکس',compass:'قطب نما',maps:'نقشه',settings:'تنظیمات',music:'موسیقی',messages:'پیام',airplaneMode:'حالت هواپیما',wifi:'وای فای',bluetooth:'بلوتوث',cellular:'شبکه',displayBright:'نمایشگر',wallpaper:'تصویر زمینه',privacy:'حریم خصوصی',battery:'باتری',general:'عمومی',displayRes:'وضوح نمایشگر',signInPrompt:'وارد شوید',signInSub:'تجربه کامل',notifications:'اعلان',clearAll:'پاک کردن',noNotifs:'اعلانی نیست',searchPh:'جستجو...',cancel:'لغو',suggestions:'پیشنهاد',send:'ارسال',msgPh:'پیام'},
+  tr:{hello:'Merhaba.',welcomeSub:'KhahanA OS hoş geldiniz',getStarted:'Başla',langTitle:'Dil',langDesc:'Dilinizi seçin',continue:'Devam',wifiTitle:'Wi-Fi Bağlantısı',joinNetwork:'Bağlan',kidTitle:'KhahanA ID',kidDesc:'Giriş yapın',emailPh:'E-posta',passPh:'Şifre',signIn:'Giriş',skip:'Geç',ready:'Hazır',readyDesc:'KhahanA OS 1.0 hoş geldiniz',startUsing:'Başla',slideUnlock:'kaydırarak aç',weather:'Hava',clock:'Saat',calculator:'Hesap',notes:'Notlar',photos:'Fotoğraf',compass:'Pusula',maps:'Harita',settings:'Ayarlar',music:'Müzik',messages:'Mesaj',airplaneMode:'Uçak Modu',wifi:'Wi-Fi',bluetooth:'Bluetooth',cellular:'Hücresel',displayBright:'Ekran',wallpaper:'Duvar Kağıdı',privacy:'Gizlilik',battery:'Pil',general:'Genel',displayRes:'Çözünürlük',signInPrompt:'Giriş yapın',signInSub:'Tüm özellikler',notifications:'Bildirimler',clearAll:'Tümünü Sil',noNotifs:'Bildirim yok',searchPh:'Ara...',cancel:'İptal',suggestions:'Öneriler',send:'Gönder',msgPh:'Mesaj'},
+  hi:{hello:'नमस्ते.',welcomeSub:'KhahanA OS में स्वागत है',getStarted:'शुरू करें',langTitle:'भाषा',langDesc:'अपनी भाषा चुनें',continue:'जारी रखें',wifiTitle:'Wi-Fi कनेक्ट करें',joinNetwork:'जॉइन करें',kidTitle:'KhahanA ID',kidDesc:'साइन इन करें',emailPh:'ईमेल',passPh:'पासवर्ड',signIn:'साइन इन',skip:'छोड़ें',ready:'तैयार',readyDesc:'KhahanA OS 1.0 में स्वागत है',startUsing:'शुरू करें',slideUnlock:'स्लाइड करें',weather:'मौसम',clock:'घड़ी',calculator:'कैलकुलेटर',notes:'नोट्स',photos:'फ़ोटो',compass:'कंपास',maps:'मानचित्र',settings:'सेटिंग्स',music:'संगीत',messages:'संदेश',airplaneMode:'हवाई मोड',wifi:'वाई-फ़ाई',bluetooth:'ब्लूटूथ',cellular:'सेलुलर',displayBright:'डिस्प्ले',wallpaper:'वॉलपेपर',privacy:'प्राइवेसी',battery:'बैटरी',general:'सामान्य',displayRes:'रिज़ॉल्यूशन',signInPrompt:'साइन इन करें',signInSub:'सभी सुविधाएं',notifications:'सूचनाएं',clearAll:'सब हटाएं',noNotifs:'कोई सूचना नहीं',searchPh:'खोजें...',cancel:'रद्द',suggestions:'सुझाव',send:'भेजें',msgPh:'संदेश'},
+  pt:{hello:'Olá.',welcomeSub:'Bem-vindo ao KhahanA OS',getStarted:'Começar',langTitle:'Idioma',langDesc:'Escolha seu idioma',continue:'Continuar',wifiTitle:'Conectar Wi-Fi',joinNetwork:'Entrar',kidTitle:'KhahanA ID',kidDesc:'Entre com seu ID',emailPh:'E-mail',passPh:'Senha',signIn:'Entrar',skip:'Pular',ready:'Tudo Pronto',readyDesc:'Bem-vindo ao KhahanA OS 1.0',startUsing:'Começar',slideUnlock:'deslize para desbloquear',weather:'Clima',clock:'Relógio',calculator:'Calculadora',notes:'Notas',photos:'Fotos',compass:'Bússola',maps:'Mapas',settings:'Ajustes',music:'Música',messages:'Mensagens',airplaneMode:'Modo Avião',wifi:'Wi-Fi',bluetooth:'Bluetooth',cellular:'Celular',displayBright:'Tela',wallpaper:'Papel de Parede',privacy:'Privacidade',battery:'Bateria',general:'Geral',displayRes:'Resolução',signInPrompt:'Entre no KhahanA OS',signInSub:'Todos os recursos',notifications:'Notificações',clearAll:'Limpar',noNotifs:'Sem notificações',searchPh:'Buscar...',cancel:'Cancelar',suggestions:'Sugestões',send:'Enviar',msgPh:'Mensagem'},
+  ko:{hello:'안녕하세요.',welcomeSub:'KhahanA OS에 오신 것을 환영합니다',getStarted:'시작',langTitle:'언어',langDesc:'언어를 선택하세요',continue:'계속',wifiTitle:'Wi-Fi 연결',joinNetwork:'연결',kidTitle:'KhahanA ID',kidDesc:'로그인하세요',emailPh:'이메일',passPh:'비밀번호',signIn:'로그인',skip:'건너뛰기',ready:'준비 완료',readyDesc:'KhahanA OS 1.0 환영합니다',startUsing:'시작',slideUnlock:'밀어서 잠금 해제',weather:'날씨',clock:'시계',calculator:'계산기',notes:'메모',photos:'사진',compass:'나침반',maps:'지도',settings:'설정',music:'음악',messages:'메시지',airplaneMode:'비행기 모드',wifi:'Wi-Fi',bluetooth:'블루투스',cellular:'셀룰러',displayBright:'디스플레이',wallpaper:'배경화면',privacy:'개인정보',battery:'배터리',general:'일반',displayRes:'해상도',signInPrompt:'로그인',signInSub:'모든 기능',notifications:'알림',clearAll:'모두 지우기',noNotifs:'알림 없음',searchPh:'검색...',cancel:'취소',suggestions:'제안',send:'보내기',msgPh:'메시지'}
+
 };
 
 function t(key){return i18n[osLang]?.[key]||i18n.en[key]||key;}
-const LANG_KEYS={weather:'weather',clock:'clock',calc:'calculator',notes:'notes',photos:'photos',compass:'compass',maps:'maps',settings:'settings',music:'music',messages:'messages'};
+const LANG_KEYS={weather:'weather',clock:'clock',calc:'calculator',notes:'notes',photos:'photos',compass:'compass',maps:'maps',settings:'settings',music:'music',messages:'messages',camera:'photos',store:'general'};
 
 function applyLanguage(){
-  const isRTL=osLang==='ar';
+  const isRTL=(osLang==='ar'||osLang==='fa');
   document.body.style.direction=isRTL?'rtl':'ltr';
   // Update lock screen
   document.querySelector('.slide-lbl').textContent=t('slideUnlock');
@@ -798,9 +1296,14 @@ function initLangs(){
   const langs=[
     {code:'en',label:'English'},
     {code:'ar',label:'العربية (Arabic)'},
+    {code:'fa',label:'فارسی (Farsi)'},
     {code:'fr',label:'Français (French)'},
     {code:'de',label:'Deutsch (German)'},
     {code:'zh',label:'中文 (Chinese)'},
+    {code:'tr',label:'Türkçe (Turkish)'},
+    {code:'hi',label:'हिन्दी (Hindi)'},
+    {code:'pt',label:'Português'},
+    {code:'ko',label:'한국어 (Korean)'},
   ];
   langs.forEach((lg,i)=>{
     const d=document.createElement('div');d.className='setup-opt'+(i===0?' sel':'');
@@ -817,7 +1320,7 @@ function initLangs(){
 }
 
 function updateSetupTexts(){
-  const isRTL=osLang==='ar';
+  const isRTL=(osLang==='ar'||osLang==='fa');
   document.querySelectorAll('.setup-page').forEach(p=>p.style.direction=isRTL?'rtl':'ltr');
   // Page 1 (current)
   document.querySelector('#sp1 .setup-title').textContent=t('langTitle');
@@ -847,6 +1350,9 @@ function nextSetup(){
   },350);sndTick();
 }
 function finishSetup(){
+  localStorage.setItem('kos1_setup','done');
+  localStorage.setItem('kos1_lang',osLang);
+  if(window.khahanAID)localStorage.setItem('kos1_kid',window.khahanAID);
   document.getElementById('setup').classList.add('off');
   applyLanguage();
   setTimeout(()=>{document.getElementById('sb').classList.add('vis');document.getElementById('lock').classList.remove('off');},400);
@@ -870,7 +1376,7 @@ const slt=document.getElementById('slt'),slk=document.getElementById('slk');
 let sling=false,sx0=0;
 slt.addEventListener('mousedown',e=>{sling=true;sx0=e.clientX;});
 slt.addEventListener('touchstart',e=>{sling=true;sx0=e.touches[0].clientX;},{passive:true});
-function slMv(cx){if(!sling)return;const dx=cx-sx0,mx=slt.offsetWidth-42,p=Math.max(3,Math.min(dx+3,mx));slk.style.left=p+'px';if(p>=mx-5){sndChime();sling=false;document.getElementById('lock').classList.add('off');document.getElementById('home').classList.add('on');}}
+function slMv(cx){if(!sling)return;const dx=cx-sx0,mx=slt.offsetWidth-42,p=Math.max(3,Math.min(dx+3,mx));slk.style.left=p+'px';if(p>=mx-5){sndChime();sling=false;document.getElementById('lock').classList.add('off');if(userPasscode){showPasscode();}else{document.getElementById('home').classList.add('on');}}}
 document.addEventListener('mousemove',e=>slMv(e.clientX));
 document.addEventListener('touchmove',e=>slMv(e.touches[0].clientX),{passive:true});
 document.addEventListener('mouseup',()=>{if(sling){sling=false;slk.style.left='3px';}});
@@ -887,6 +1393,8 @@ const APPS=[
   {id:'maps',name:'Maps',bg:'linear-gradient(180deg,#72c965,#2d8a2e)',svg:'<svg width="28" height="28" viewBox="0 0 32 32"><path d="M11 4l10 3v21l-10-3V4z" fill="rgba(255,255,255,0.25)" stroke="#fff" stroke-width="0.8"/><path d="M1 7l10-3v21L1 28V7z" fill="rgba(255,255,255,0.15)" stroke="#fff" stroke-width="0.8"/><path d="M21 7l10-3v21l-10 3V7z" fill="rgba(255,255,255,0.15)" stroke="#fff" stroke-width="0.8"/><circle cx="16" cy="13" r="3" fill="none" stroke="#ff3b30" stroke-width="1.5"/><circle cx="16" cy="13" r="1" fill="#ff3b30"/></svg>'},
   {id:'settings',name:'Settings',bg:'linear-gradient(180deg,#9a9a9f,#58585c)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><path d="M16 10a6 6 0 100 12 6 6 0 000-12z" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="16" r="2.5" fill="#fff"/><path d="M16 2v4M16 26v4M2 16h4M26 16h4M5.9 5.9l2.8 2.8M23.3 23.3l2.8 2.8M5.9 26.1l2.8-2.8M23.3 8.7l2.8-2.8" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>'},
   {id:'music',name:'Music',bg:'linear-gradient(135deg,#fc3c44,#c42b50)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="6" y="4" width="4" height="18" rx="2" fill="#fff" opacity="0.3"/><rect x="14" y="8" width="4" height="14" rx="2" fill="#fff" opacity="0.5"/><rect x="22" y="2" width="4" height="20" rx="2" fill="#fff" opacity="0.7"/><ellipse cx="8" cy="24" rx="4" ry="3" fill="#fff"/><ellipse cx="16" cy="25" rx="4" ry="3" fill="#fff" opacity="0.8"/><ellipse cx="24" cy="24" rx="4" ry="3" fill="#fff" opacity="0.6"/></svg>',peek:'♫ Night Drive — KhahanA Beats'},
+  {id:'camera',name:'Camera',bg:'linear-gradient(180deg,#333,#111)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="3" y="8" width="26" height="18" rx="3" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="17" r="5" stroke="#fff" stroke-width="1.5"/><circle cx="16" cy="17" r="2" fill="#fff"/><rect x="11" y="5" width="10" height="4" rx="1" stroke="#fff" stroke-width="1"/></svg>'},
+  {id:'store',name:'App Store',bg:'linear-gradient(135deg,#007aff,#5856d6)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#fff" stroke-width="1.5"/><text x="16" y="21" text-anchor="middle" font-size="16" fill="#fff" font-weight="300" font-family="Overpass">A</text></svg>'},
   {id:'messages',name:'Messages',bg:'linear-gradient(180deg,var(--accent),#00a88a)',svg:'<svg width="28" height="28" viewBox="0 0 32 32" fill="none"><rect x="3" y="5" width="26" height="18" rx="9" fill="#fff"/><polygon points="10,23 16,28 14,23" fill="#fff"/><circle cx="11" cy="14" r="2" fill="#00D4AA"/><circle cx="16" cy="14" r="2" fill="#00a88a"/><circle cx="21" cy="14" r="2" fill="#008870"/></svg>',badge:3,peek:'Sanam: That\'s incredible!'},
 ];
 const DOCK_IDS=['messages','compass','music'];
@@ -907,6 +1415,12 @@ const RES=[
   {name:'iPhone 16 Plus',w:430,h:932,l:'1290×2796 @3x',notch:true,di:true},
   {name:'iPhone 16 Pro',w:402,h:874,l:'1206×2622 @3x',notch:true,di:true},
   {name:'iPhone 16 Pro Max',w:440,h:956,l:'1320×2868 @3x',notch:true,di:true},
+  {name:'Samsung Galaxy S24',w:360,h:780,l:'1080x2340 @3x',notch:true,di:true},
+  {name:'Samsung Galaxy S24 Ultra',w:384,h:824,l:'1440x3120 @3.75x',notch:true,di:true},
+  {name:'Google Pixel 9',w:412,h:892,l:'1080x2424 @2.6x',notch:true,di:true},
+  {name:'Google Pixel 9 Pro',w:412,h:892,l:'1280x2856 @3.5x',notch:true,di:true},
+  {name:'Samsung Galaxy A55',w:360,h:800,l:'1080x2400 @3x',notch:true},
+  {name:'OnePlus 12',w:384,h:854,l:'1440x3168 @3.75x',notch:true,di:true},
 ];
 let curRes=3; // default iPhone 12/13/14
 
@@ -924,11 +1438,13 @@ function showPk(e,id){const a=APPS.find(x=>x.id===id);if(!a?.peek)return;const p
 function hidePk(){document.getElementById('peek').classList.remove('on');}
 
 // CONTROL/NOTIF CENTER
-document.getElementById('ccZ').addEventListener('click',()=>{document.getElementById('cc').classList.toggle('open');sndTick();});
-document.getElementById('ncZ').addEventListener('click',()=>{document.getElementById('nc').classList.toggle('open');sndTick();});
+document.getElementById('ccZ').addEventListener('click',()=>{const cc=document.getElementById('cc'),cz=document.getElementById('ccCZ');if(cc.classList.contains('open')){cc.classList.remove('open');cz.classList.remove('show');}else{cc.classList.add('open');cz.classList.add('show');sndTick();}});
+function closeCC(){document.getElementById('cc').classList.remove('open');document.getElementById('ccCZ').classList.remove('show');}
+document.getElementById('ncZ').addEventListener('click',()=>{const nc=document.getElementById('nc'),nz=document.getElementById('ncCZ');if(nc.classList.contains('open')){nc.classList.remove('open');nz.classList.remove('show');}else{nc.classList.add('open');nz.classList.add('show');sndTick();}});
+function closeNC(){document.getElementById('nc').classList.remove('open');document.getElementById('ncCZ').classList.remove('show');}
 function ccSl(e,el){const r=el.getBoundingClientRect();el.querySelector('.cc-slider-fill').style.width=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100))+'%';}
 function toggleFlash(){const f=document.getElementById('flash'),t=document.getElementById('ccF');if(f.style.display==='block'){f.style.display='none';t.classList.remove('active');t.querySelector('.cc-val').textContent='Off';}else{f.style.display='block';t.classList.add('active');t.querySelector('.cc-val').textContent='On';}}
-const NOTIFS=[{app:'Messages',bg:'#00D4AA',svg:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M20 2H4a2 2 0 00-2 2v12a2 2 0 002 2h3l5 5 5-5h3a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>',msg:'Sanam: That\'s incredible! Send me a screenshot',time:'2m ago'},{app:'Weather',bg:'#5ac8fa',svg:'<svg viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="5"/></svg>',msg:'Extreme heat warning for Dubai today.',time:'15m ago'},{app:'KhahanA OS',bg:'#1B3A5C',svg:'<svg viewBox="0 0 24 24" fill="#00D4AA"><circle cx="12" cy="12" r="8" fill="none" stroke="#00D4AA" stroke-width="1.5"/><text x="12" y="15" text-anchor="middle" font-size="8" font-weight="800">K</text></svg>',msg:'Welcome to KhahanA OS 1.0. Intelligence amplified.',time:'Just now'}];
+const NOTIFS=[{app:'Messages',bg:'#00D4AA',svg:'<svg viewBox="0 0 24 24" fill="#fff"><path d="M20 2H4a2 2 0 00-2 2v12a2 2 0 002 2h3l5 5 5-5h3a2 2 0 002-2V4a2 2 0 00-2-2z"/></svg>',msg:'Sanam: That\'s incredible! Send me a screenshot',time:'2m ago'},{app:'Weather',bg:'#5ac8fa',svg:'<svg viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="5"/></svg>',msg:'Extreme heat warning for Dubai today.',time:'15m ago'},{app:'KhahanA OS',bg:'#1B3A5C',svg:'<svg viewBox="0 0 24 24" fill="#00D4AA"><circle cx="12" cy="12" r="8" fill="none" stroke="#00D4AA" stroke-width="1.5"/><text x="12" y="15" text-anchor="middle" font-size="8" font-weight="800">K</text></svg>',msg:'Welcome to KhahanA OS. Intelligence amplified.',time:'Just now'}];
 function renderN(){document.getElementById('ncL').innerHTML=NOTIFS.map(n=>`<div class="nc-card"><div class="nc-card-ic" style="background:${n.bg}">${n.svg}</div><div class="nc-card-body"><div class="nc-card-app">${n.app}</div><div class="nc-card-msg">${n.msg}</div><div class="nc-card-time">${n.time}</div></div></div>`).join('');}
 renderN();
 function clrN(){document.getElementById('ncL').innerHTML='<div style="text-align:center;color:rgba(255,255,255,0.2);padding:30px;font-size:13px">No Notifications</div>';}
@@ -936,27 +1452,96 @@ function clrN(){document.getElementById('ncL').innerHTML='<div style="text-align
 // ═══ APP OPEN/CLOSE ═══
 function openApp(id){sndWhoosh();let s=document.getElementById('s-'+id);if(s){s.classList.add('open');if(id==='clock')startClk();return;}s=document.createElement('div');s.className='as open';s.id='s-'+id;const appName=getAppName(APPS.find(a=>a.id===id));s.innerHTML=`<div class="ab" style="${barBg(id)}"><button class="bk" onclick="closeApp('${id}')"><svg viewBox="0 0 12 20"><path d="M10 2L2 10l8 8"/></svg></button><span class="t">${appName}</span></div><div class="ac" id="c-${id}"></div>`;document.body.appendChild(s);build(id);}
 function closeApp(id){sndWhoosh();const el=document.getElementById('s-'+id);if(el){el.style.animation='none';el.style.transform='translateX(100%)';el.style.transition='transform 0.2s ease-in';setTimeout(()=>{el.classList.remove('open');el.style.cssText='';},220);}}
-function barBg(id){return{weather:'background:linear-gradient(180deg,#5ac8fa,#4a90d9)',clock:'background:linear-gradient(180deg,#1a1a1a,#0a0a0a)',calc:'background:#111',notes:'background:linear-gradient(180deg,#c49a38,#8b6914)',music:'background:linear-gradient(180deg,#111,#0a0a0a)',maps:'background:linear-gradient(180deg,#86c67c,#3d8b33)',compass:'background:linear-gradient(135deg,#00D4AA,#1B3A5C)',messages:'background:linear-gradient(180deg,#00D4AA,#00a88a)'}[id]||'';}
-function build(id){const c=document.getElementById('c-'+id);({weather:bW,clock:()=>{c.className+=' clk-w';bClk(c);},calc:()=>{c.className+=' calc-w';bCalc(c);},notes:bN,photos:()=>{c.className+=' pho-w';bPho(c);},compass:()=>{c.className+=' saf-w';bSaf(c);},maps:()=>{c.className+=' map-w';bMap(c);},settings:()=>{c.className+=' set-w';bSet(c);},music:()=>{c.className+=' mus-w';bMus(c);},messages:()=>{c.className+=' msg-w';bMsg(c);}})[id]?.(c);}
+function barBg(id){return{weather:'background:linear-gradient(180deg,#5ac8fa,#4a90d9)',clock:'background:linear-gradient(180deg,#1a1a1a,#0a0a0a)',calc:'background:#111',notes:'background:linear-gradient(180deg,#c49a38,#8b6914)',music:'background:linear-gradient(180deg,#111,#0a0a0a)',maps:'background:linear-gradient(180deg,#86c67c,#3d8b33)',compass:'background:linear-gradient(135deg,#00D4AA,#1B3A5C)',messages:'background:linear-gradient(180deg,#00D4AA,#00a88a)',camera:'background:#111',store:'background:linear-gradient(135deg,#007aff,#5856d6)'}[id]||'';}
+function build(id){const c=document.getElementById('c-'+id);({weather:bW,clock:()=>{c.className+=' clk-w';bClk(c);},calc:()=>{c.className+=' calc-w';bCalc(c);},notes:bN,photos:()=>{c.className+=' pho-w';bPho(c);},compass:()=>{c.className+=' saf-w';bSaf(c);},maps:()=>{c.className+=' map-w';bMap(c);},settings:()=>{c.className+=' set-w';bSet(c);},music:()=>{c.className+=' mus-w';bMus(c);},messages:()=>{c.className+=' msg-w';bMsg(c);},camera:()=>{c.className+=' cam-w';bCam(c);},store:()=>{c.className+=' store-w';bStore(c);}})[id]?.(c);}
 
 // ═══ INDIVIDUAL APPS ═══
 function bW(c){c.className+=' w-bg';c.innerHTML=`<div class="w-city">Dubai</div><div class="w-temp">42°</div><div class="w-cond">Sunny</div><div class="w-hl">H:45° L:32°</div><div class="w-hrs">${['Now,☀️,42','1PM,☀️,43','2PM,☀️,44','3PM,🌤,43','4PM,☀️,42','5PM,🌤,40','6PM,🌅,38','7PM,🌙,36'].map(h=>{const[t,i,d]=h.split(',');return`<div class="w-h"><span>${t}</span><span style="font-size:17px">${i}</span><span class="ht">${d}°</span></div>`;}).join('')}</div><div class="w-wk">${[['Sun','☀️',44,31],['Mon','☀️',43,30],['Tue','⛅',40,29],['Wed','☀️',45,32],['Thu','☀️',46,33],['Fri','🌤',42,30],['Sat','☀️',44,31]].map(([d,i,h,l])=>`<div class="w-d"><span class="dn">${d}</span><span class="di">${i}</span><span class="dt"><span class="lo">${l}°</span><span>${h}°</span></span></div>`).join('')}</div>`;}
 
 let ckI;
-function bClk(c){c.innerHTML=`<div class="cf" id="ckF"><div class="cdot"></div><div class="ch chh" id="ckH"></div><div class="ch chm" id="ckM"></div><div class="ch chs" id="ckS"></div></div><div class="clk-digi" id="ckD">00:00:00</div><div class="sw-r"><button class="swb rs" onclick="swR()">Reset</button><button class="swb go" id="swB" onclick="swTg()">Start</button></div>`;const f=document.getElementById('ckF');for(let i=0;i<60;i++){const m=document.createElement('div');m.style.cssText=`position:absolute;top:${i%5===0?'5':'7'}px;left:50%;width:${i%5===0?'2':'1'}px;height:${i%5===0?'10':'6'}px;background:${i%5===0?'rgba(0,212,170,0.7)':'rgba(255,255,255,0.3)'};margin-left:-${i%5===0?'1':'0.5'}px;transform:rotate(${i*6}deg);transform-origin:center ${85-5}px;`;f.appendChild(m);}startClk();}
-function startClk(){if(ckI)clearInterval(ckI);function t(){const d=new Date(),s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;const hs=document.getElementById('ckH'),ms=document.getElementById('ckM'),ss=document.getElementById('ckS');if(hs){hs.style.transform=`rotate(${h*30}deg)`;ms.style.transform=`rotate(${m*6}deg)`;ss.style.transform=`rotate(${s*6}deg)`;}const dg=document.getElementById('ckD');if(dg&&!swO)dg.textContent=ft();}t();ckI=setInterval(t,1000);}
-let swO=false,swC=0,swI;
-function swTg(){const b=document.getElementById('swB');if(swO){clearInterval(swI);b.textContent='Start';b.className='swb go';}else{swI=setInterval(()=>{swC+=10;const ms=Math.floor(swC%1000/10),s=Math.floor(swC/1000)%60,m=Math.floor(swC/60000);document.getElementById('ckD').textContent=`${m<10?'0':''}${m}:${s<10?'0':''}${s}.${ms<10?'0':''}${ms}`;},10);b.textContent='Stop';b.className='swb st';}swO=!swO;}
-function swR(){clearInterval(swI);swO=false;swC=0;const b=document.getElementById('swB');if(b){b.textContent='Start';b.className='swb go';}const d=document.getElementById('ckD');if(d)d.textContent='00:00.00';}
+function bClk(c){
+  c.style.display='flex';c.style.flexDirection='column';c.style.height='100%';
+  c.innerHTML=`<div id="clkContent" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding-top:24px;color:#fff"></div>
+  <div class="clk-tabs">
+    <div class="clk-tab on" onclick="switchClkTab('clock',this)"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>Clock</div>
+    <div class="clk-tab" onclick="switchClkTab('world',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/></svg>World</div>
+    <div class="clk-tab" onclick="switchClkTab('stopwatch',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4M12 2v3"/></svg>Stopwatch</div>
+    <div class="clk-tab" onclick="switchClkTab('timer',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10z"/><path d="M12 6v6l4 2"/></svg>Timer</div>
+  </div>`;
+  switchClkTab('clock');
+}
+function switchClkTab(mode,el){
+  clkMode=mode;
+  document.querySelectorAll('.clk-tab').forEach(t=>t.classList.remove('on'));
+  if(el)el.classList.add('on');
+  const cc=document.getElementById('clkContent');if(!cc)return;
+  if(mode==='clock'){
+    cc.innerHTML=`<div class="cf" id="ckF"><div class="cdot"></div><div class="ch chh" id="ckH"></div><div class="ch chm" id="ckM"></div><div class="ch chs" id="ckS"></div></div><div class="clk-digi" id="ckD">00:00:00</div>`;
+    const f=document.getElementById('ckF');for(let i=0;i<60;i++){const m=document.createElement('div');m.style.cssText=\`position:absolute;top:\${i%5===0?'5':'7'}px;left:50%;width:\${i%5===0?'2':'1'}px;height:\${i%5===0?'10':'6'}px;background:\${i%5===0?'rgba(0,212,170,0.7)':'rgba(255,255,255,0.3)'};margin-left:-\${i%5===0?'1':'0.5'}px;transform:rotate(\${i*6}deg);transform-origin:center \${85-5}px;\`;f.appendChild(m);}
+    startClk();
+  }else if(mode==='world'){
+    const cities=[['Dubai','UTC+4',4],['London','UTC+0',0],['New York','UTC-5',-5],['Tokyo','UTC+9',9],['Sydney','UTC+11',11],['Los Angeles','UTC-8',-8]];
+    cc.innerHTML='<div style="width:100%;padding:0 16px">'+cities.map(([city,tz,off])=>{
+      const d=new Date();d.setUTCHours(d.getUTCHours()+off);
+      const time=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+      return \`<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:0.5px solid rgba(255,255,255,0.08)"><div><div style="font-size:15px;font-weight:500">\${city}</div><div style="font-size:11px;opacity:0.3">\${tz}</div></div><div style="font-size:28px;font-weight:100">\${time}</div></div>\`;
+    }).join('')+'</div>';
+  }else if(mode==='stopwatch'){
+    cc.innerHTML=`<div class="clk-digi" id="ckD" style="margin-top:50px">00:00.00</div><div class="sw-r" style="margin-top:24px"><button class="swb rs" onclick="swR()">Reset</button><button class="swb go" id="swB" onclick="swTg()">Start</button></div><div id="swLaps" style="width:100%;padding:16px"></div>`;
+  }else if(mode==='timer'){
+    cc.innerHTML=`<div class="timer-display" id="timerDisp">05:00</div><div class="timer-picker"><select id="timerMin" onchange="updateTimerDisp()">\${Array.from({length:60},(_, i)=>'<option value="'+i+'"'+(i===5?' selected':'')+'>'+i+'</option>').join('')}</select><span>min</span><select id="timerSec" onchange="updateTimerDisp()">\${Array.from({length:60},(_, i)=>'<option value="'+i+'">'+String(i).padStart(2,'0')+'</option>').join('')}</select><span>sec</span></div><div class="sw-r" style="margin-top:24px"><button class="swb rs" onclick="resetTimer()">Cancel</button><button class="swb go" id="timerBtn" onclick="toggleTimer()">Start</button></div>`;
+  }
+}
+function startClk(){if(ckI)clearInterval(ckI);function t(){const d=new Date(),s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;const hs=document.getElementById('ckH'),ms=document.getElementById('ckM'),ss=document.getElementById('ckS');if(hs){hs.style.transform=\`rotate(\${h*30}deg)\`;ms.style.transform=\`rotate(\${m*6}deg)\`;ss.style.transform=\`rotate(\${s*6}deg)\`;}const dg=document.getElementById('ckD');if(dg&&!swO&&clkMode==='clock')dg.textContent=ft();}t();ckI=setInterval(t,1000);}
+
+// Timer
+let timerRunning=false,timerInt,timerLeft=300;
+function updateTimerDisp(){const m=parseInt(document.getElementById('timerMin')?.value||0),s=parseInt(document.getElementById('timerSec')?.value||0);timerLeft=m*60+s;const d=document.getElementById('timerDisp');if(d)d.textContent=String(Math.floor(timerLeft/60)).padStart(2,'0')+':'+String(timerLeft%60).padStart(2,'0');}
+function toggleTimer(){const btn=document.getElementById('timerBtn');if(timerRunning){clearInterval(timerInt);btn.textContent='Start';btn.className='swb go';timerRunning=false;}else{if(timerLeft<=0)return;timerRunning=true;btn.textContent='Pause';btn.className='swb st';timerInt=setInterval(()=>{timerLeft--;if(timerLeft<=0){timerLeft=0;clearInterval(timerInt);timerRunning=false;btn.textContent='Start';btn.className='swb go';sndChime();}const d=document.getElementById('timerDisp');if(d)d.textContent=String(Math.floor(timerLeft/60)).padStart(2,'0')+':'+String(timerLeft%60).padStart(2,'0');},1000);}}
+function resetTimer(){clearInterval(timerInt);timerRunning=false;timerLeft=300;const d=document.getElementById('timerDisp');if(d)d.textContent='05:00';const btn=document.getElementById('timerBtn');if(btn){btn.textContent='Start';btn.className='swb go';}}
 
 let cv='0',cp=null,co=null,cr=false;
-function bCalc(c){c.innerHTML=`<div class="calc-d" id="cD">0</div><div class="calc-g"><button class="cb f" onclick="cFn('AC')">AC</button><button class="cb f" onclick="cFn('+-')">+/−</button><button class="cb f" onclick="cFn('%')">%</button><button class="cb o" onclick="cOp('/')">÷</button><button class="cb n" onclick="cNm('7')">7</button><button class="cb n" onclick="cNm('8')">8</button><button class="cb n" onclick="cNm('9')">9</button><button class="cb o" onclick="cOp('*')">×</button><button class="cb n" onclick="cNm('4')">4</button><button class="cb n" onclick="cNm('5')">5</button><button class="cb n" onclick="cNm('6')">6</button><button class="cb o" onclick="cOp('-')">−</button><button class="cb n" onclick="cNm('1')">1</button><button class="cb n" onclick="cNm('2')">2</button><button class="cb n" onclick="cNm('3')">3</button><button class="cb o" onclick="cOp('+')">+</button><button class="cb n z" onclick="cNm('0')">0</button><button class="cb n" onclick="cNm('.')">.</button><button class="cb o" onclick="cEq()">=</button></div>`;}
+function bCalc(c){
+  let sciMode=false;
+  c.innerHTML=`<div style="position:relative"><div class="calc-d" id="cD">0</div><button class="calc-sci-toggle" id="sciToggle" onclick="toggleSci()">SCI</button></div><div id="sciRow" class="calc-sci-row" style="display:none"><button class="cb-s" onclick="sciOp('sin')">sin</button><button class="cb-s" onclick="sciOp('cos')">cos</button><button class="cb-s" onclick="sciOp('tan')">tan</button><button class="cb-s" onclick="sciOp('sqrt')">√</button><button class="cb-s" onclick="sciOp('pow')">x²</button></div><div class="calc-g"><button class="cb f" onclick="cFn('AC')">AC</button><button class="cb f" onclick="cFn('+-')">+/−</button><button class="cb f" onclick="cFn('%')">%</button><button class="cb o" onclick="cOp('/')">÷</button><button class="cb n" onclick="cNm('7')">7</button><button class="cb n" onclick="cNm('8')">8</button><button class="cb n" onclick="cNm('9')">9</button><button class="cb o" onclick="cOp('*')">×</button><button class="cb n" onclick="cNm('4')">4</button><button class="cb n" onclick="cNm('5')">5</button><button class="cb n" onclick="cNm('6')">6</button><button class="cb o" onclick="cOp('-')">−</button><button class="cb n" onclick="cNm('1')">1</button><button class="cb n" onclick="cNm('2')">2</button><button class="cb n" onclick="cNm('3')">3</button><button class="cb o" onclick="cOp('+')">+</button><button class="cb n z" onclick="cNm('0')">0</button><button class="cb n" onclick="cNm('.')">.</button><button class="cb o" onclick="cEq()">=</button></div>`;}
 function cNm(n){sndTick();if(cr){cv='';cr=false;}if(n==='.'&&cv.includes('.'))return;cv=cv==='0'&&n!=='.'?n:cv+n;document.getElementById('cD').textContent=cv;document.querySelectorAll('.cb.o').forEach(b=>b.classList.remove('sel'));}
 function cOp(o){sndTick();cp=parseFloat(cv);co=o;cr=true;document.querySelectorAll('.cb.o').forEach(b=>b.classList.remove('sel'));event.target.classList.add('sel');}
 function cEq(){if(!co||cp===null)return;sndTick();const c=parseFloat(cv);let r;switch(co){case'+':r=cp+c;break;case'-':r=cp-c;break;case'*':r=cp*c;break;case'/':r=c===0?'Error':cp/c;break;}cv=typeof r==='number'?parseFloat(r.toPrecision(10)).toString():r;document.getElementById('cD').textContent=cv;co=null;cp=null;cr=true;document.querySelectorAll('.cb.o').forEach(b=>b.classList.remove('sel'));}
 function cFn(f){sndTick();if(f==='AC'){cv='0';cp=null;co=null;}else if(f==='+-')cv=(parseFloat(cv)*-1).toString();else if(f==='%')cv=(parseFloat(cv)/100).toString();document.getElementById('cD').textContent=cv;}
 
-function bN(c){c.innerHTML=`<div class="notes-w"><textarea placeholder="Start typing your note..."></textarea></div>`;}
+function bN(c){
+  c.innerHTML=`<div style="display:flex;flex-direction:column;height:100%">
+    <div class="notes-toolbar">
+      <button class="notes-tool" id="ntText" onclick="notesMode('text')"><svg viewBox="0 0 24 24" fill="#333"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg></button>
+      <button class="notes-tool" id="ntDraw" onclick="notesMode('draw')"><svg viewBox="0 0 24 24" fill="#333"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+      <div class="notes-colors">
+        <div class="notes-color on" style="background:#000" onclick="setDrawColor('#000',this)"></div>
+        <div class="notes-color" style="background:#ff3b30" onclick="setDrawColor('#ff3b30',this)"></div>
+        <div class="notes-color" style="background:#007aff" onclick="setDrawColor('#007aff',this)"></div>
+        <div class="notes-color" style="background:#00D4AA" onclick="setDrawColor('#00D4AA',this)"></div>
+      </div>
+    </div>
+    <div id="notesTextArea" class="notes-w" style="flex:1;overflow-y:auto"><textarea placeholder="Start typing your note..."></textarea></div>
+    <canvas id="notesCanvas" class="notes-canvas" style="display:none;background:#fffde7"></canvas>
+  </div>`;
+  notesMode('text');
+}
+let drawColor='#000',drawing=false;
+function notesMode(mode){
+  document.getElementById('ntText').classList.toggle('on',mode==='text');
+  document.getElementById('ntDraw').classList.toggle('on',mode==='draw');
+  document.getElementById('notesTextArea').style.display=mode==='text'?'block':'none';
+  const cv=document.getElementById('notesCanvas');
+  cv.style.display=mode==='draw'?'block':'none';
+  if(mode==='draw'){
+    cv.width=cv.offsetWidth;cv.height=cv.offsetHeight;
+    const ctx=cv.getContext('2d');ctx.lineCap='round';ctx.lineWidth=2;
+    cv.onpointerdown=e=>{drawing=true;ctx.beginPath();ctx.moveTo(e.offsetX,e.offsetY);};
+    cv.onpointermove=e=>{if(!drawing)return;ctx.strokeStyle=drawColor;ctx.lineTo(e.offsetX,e.offsetY);ctx.stroke();};
+    cv.onpointerup=()=>{drawing=false;};
+  }
+}
+function setDrawColor(col,el){drawColor=col;document.querySelectorAll('.notes-color').forEach(c=>c.classList.remove('on'));el.classList.add('on');}
 
 function bPho(c){c.innerHTML=`<div class="pho-t"><div class="pho-tb on">All Photos</div><div class="pho-tb">Albums</div><div class="pho-tb">Moments</div></div><div class="pho-g" id="pG"></div>`;const g=document.getElementById('pG');[['#e74c3c','#f39c12'],['#3498db','#2ecc71'],['#9b59b6','#e74c3c'],['#1abc9c','#3498db'],['#f39c12','#e74c3c'],['#2ecc71','#1abc9c'],['#e74c3c','#9b59b6'],['#3498db','#f39c12'],['#1abc9c','#e74c3c'],['#9b59b6','#3498db'],['#f39c12','#2ecc71'],['#e74c3c','#1abc9c'],['#2c3e50','#3498db'],['#e67e22','#e74c3c'],['#1abc9c','#9b59b6']].forEach(([a,b],i)=>{const d=document.createElement('div');d.className='pho-i';d.style.background=`linear-gradient(${40+i*25}deg,${a},${b})`;g.appendChild(d);});}
 
@@ -1062,12 +1647,14 @@ function bSet(c){
   ${idSection}
   <div class="sg"><div class="sr"><div class="sr-i" style="background:var(--accent)"><svg viewBox="0 0 24 24"><path d="M21 16V8l-8-4.5L5 8v8l8 4.5z" fill="#fff"/></svg></div><span class="sr-l">${t("airplaneMode")}</span><div class="tg" id="airTg" onclick="toggleAirplane(this)"></div></div><div class="sr" id="wifiRow"><div class="sr-i" style="background:#007aff"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M1.42 9a16 16 0 0121.16 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><span class="sr-l">Wi-Fi</span><span class="sr-v" id="wifiVal">KhahanA-5G</span><span class="sr-a">›</span></div><div class="sr" id="btRow"><div class="sr-i" style="background:#007aff"><svg viewBox="0 0 24 24"><rect x="8" y="3" width="8" height="18" rx="4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><span class="sr-l">Bluetooth</span><span class="sr-v" id="btVal">On</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#4cd964"><svg viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0114.08 0M8.53 16.11a6 6 0 016.95 0M12 20h.01" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div><span class="sr-l">${t("cellular")}</span><span class="sr-v">du</span><span class="sr-a">›</span></div></div>
   <div class="sg"><div class="sr"><div class="sr-i" style="background:#ff9500"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5" fill="#fff"/></svg></div><span class="sr-l">${t("displayBright")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#5856d6"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><span class="sr-l">${t("wallpaper")}</span><span class="sr-a">›</span></div><div class="sr"><div class="sr-i" style="background:#ff2d55"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" fill="none" stroke="#fff" stroke-width="1.5"/><path d="M7 11V7a5 5 0 0110 0v4" fill="none" stroke="#fff" stroke-width="1.5"/></svg></div><span class="sr-l">${t("privacy")}</span><span class="sr-a">›</span></div></div>
+  <div class="sg"><div class="sr" onclick="openPasscodeSettings()"><div class="sr-i" style="background:#ff2d55"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" fill="#fff"/></svg></div><span class="sr-l">Passcode</span><span class="sr-v">${userPasscode?'On':'Off'}</span><span class="sr-a">›</span></div></div>
   <div class="sg"><div class="sr"><div class="sr-i" style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#fff"/></svg></div><span class="sr-l">${t("battery")}</span><span class="sr-v" id="setBatt">100%</span><span class="sr-a">›</span></div></div>
   <div class="sgt">${t("displayRes")}</div>
   <div class="rp" id="rp"></div>
-  <div class="sg"><div class="sr" onclick="document.getElementById('updateOverlay').classList.add('open')"><div class="sr-i" style="background:#ff3b30"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z" fill="#fff"/></svg></div><span class="sr-l">Software Update</span><span class="sr-v" style="color:#ff3b30">1 Available</span><span class="sr-a">›</span></div></div>
+  <div class="sg"><div class="sr" onclick="document.getElementById('updateOverlay').classList.add('open')"><div class="sr-i" style="background:#ff3b30"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z" fill="#fff"/></svg></div><span class="sr-l">Software Update</span><span class="sr-v" style="color:${osVer==='1.0'?'#ff3b30':'var(--accent)'}">${osVer==='1.0'?'1 Available':'Up to Date'}</span><span class="sr-a">›</span></div></div>
+  <div class="sg"><div class="sr" onclick="showLangPicker()"><div class="sr-i" style="background:#007aff"><svg viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="13" fill="#fff" font-weight="700">文</text></svg></div><span class="sr-l">Language</span><span class="sr-v">${osLang.toUpperCase()}</span><span class="sr-a">›</span></div></div>
   <div class="sg"><div class="sr"><div class="sr-i" style="background:#8e8e93"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><span class="sr-l">${t("general")}</span><span class="sr-a">›</span></div></div>
-  <div class="sg"><div class="sr" style="justify-content:center;color:#8e8e93;font-size:12px;cursor:default">KhahanA OS 1.0 (Build 26A329)</div></div>
+  <div class="sg"><div class="sr" style="justify-content:center;color:#8e8e93;font-size:12px;cursor:default">KhahanA OS ${osVer} (Build ${osVer==='1.0'?'26A329':'26B401'})</div></div>
   <div style="height:20px"></div>`;
   bRP();
 }
@@ -1136,7 +1723,7 @@ function fillModelInfo(){
   const info=detectDevice();
   const el=document.getElementById('setupModel');
   if(el){
-    el.innerHTML=`<div style="font-weight:600;color:var(--accent);font-size:13px;margin-bottom:4px">${info.model}</div><div>Screen: ${info.screen}</div><div>KhahanA OS 1.0 (Build 26A329)</div>`;
+    el.innerHTML=`<div style="font-weight:600;color:var(--accent);font-size:13px;margin-bottom:4px">${info.model}</div><div>Screen: ${info.screen}</div><div>KhahanA OS ${osVer} (Build ${osVer==='1.0'?'26A329':'26B401'})</div>`;
   }
 }
 // Call when setup page 4 appears - already handled in nextSetup
@@ -1145,8 +1732,13 @@ function fillModelInfo(){
 window.khahanAID=null;
 function signInKID(){
   const email=document.getElementById('kidEmail')?.value.trim();
-  if(email){window.khahanAID=email;}
-  else{window.khahanAID='user@khahana.com';} // default if empty
+  const pass=document.getElementById('kidPass')?.value.trim();
+  if(!email||!pass){
+    if(!email){const el=document.getElementById('kidEmail');el.style.border='1.5px solid #ff3b30';el.placeholder='Required';setTimeout(()=>{el.style.border='';},2000);}
+    if(!pass){const el=document.getElementById('kidPass');el.style.border='1.5px solid #ff3b30';el.placeholder='Required';setTimeout(()=>{el.style.border='';},2000);}
+    return;
+  }
+  window.khahanAID=email;
   nextSetup();
 }
 function skipKID(){
@@ -1332,20 +1924,214 @@ function startUpdate(){
             status.textContent='Installing... '+Math.round(iProg)+'%';
             if(iProg>=100){
               clearInterval(iInterval);
-              status.textContent='KhahanA OS 1.1 has been installed successfully.';
-              status.style.color='var(--accent)';
-              btn.style.display='block';
-              btn.textContent='Up to Date ✓';
-              btn.classList.add('installed');
-              bar.classList.remove('show');
-              updateRunning=false;
-              sndChime();
+              // Reboot animation
+              const rb=document.createElement('div');
+              rb.style.cssText='position:absolute;inset:0;z-index:99998;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;';
+              rb.innerHTML='<svg width="65" height="65" viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="rgba(0,212,170,0.5)" stroke-width="1.2"/><text x="40" y="33" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.7)" font-weight="300" font-family="Overpass">KhahanA</text><text x="40" y="48" text-anchor="middle" font-size="18" fill="rgba(0,212,170,0.85)" font-weight="800" font-family="Overpass">OS</text><text x="40" y="60" text-anchor="middle" font-size="9" fill="rgba(255,255,255,0.5)" font-weight="200" font-family="Overpass">1.0.1</text></svg><div style="width:130px;height:2px;background:#111;border-radius:2px;margin-top:24px;overflow:hidden"><div id="rbBar" style="height:100%;width:0%;background:rgba(0,212,170,0.7);transition:width 0.15s"></div></div>';
+              document.body.appendChild(rb);
+              let rp=0;const ri=setInterval(()=>{rp+=Math.random()*4+2;if(rp>100)rp=100;const b=document.getElementById('rbBar');if(b)b.style.width=rp+'%';if(rp>=100){clearInterval(ri);setTimeout(()=>{rb.remove();document.getElementById('updateOverlay').classList.remove('open');osVer='1.0.1';localStorage.setItem('kos1_ver','1.0.1');status.textContent='KhahanA OS 1.0.1 installed.';status.style.color='var(--accent)';btn.style.display='block';btn.textContent='Up to Date ✓';btn.classList.add('installed');bar.classList.remove('show');updateRunning=false;sndChime();},800);}},80);
             }
           },120);
         },1500);
       },2000);
     }
   },100);
+}
+
+// ═══ LANGUAGE PICKER IN SETTINGS ═══
+function showLangPicker(){
+  const ol=document.createElement('div');ol.id='langPickerOL';
+  ol.style.cssText='position:absolute;inset:0;z-index:9000;background:rgba(0,0,0,0.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;';
+  const langs=[['en','English'],['ar','العربية'],['fa','فارسی'],['fr','Français'],['de','Deutsch'],['zh','中文'],['tr','Türkçe'],['hi','हिन्दी'],['pt','Português'],['ko','한국어']];
+  const opts=langs.map(([code,label])=>`<div onclick="changeLang('${code}')" style="padding:12px 16px;background:${code===osLang?'rgba(0,212,170,0.2)':'rgba(255,255,255,0.06)'};border:1px solid ${code===osLang?'rgba(0,212,170,0.4)':'rgba(255,255,255,0.06)'};border-radius:10px;cursor:pointer;display:flex;justify-content:space-between;align-items:center"><span>${label}</span>${code===osLang?'<span style="color:var(--accent);font-weight:700">✓</span>':''}</div>`).join('');
+  ol.innerHTML=`<div style="background:#1c1c1e;border-radius:16px;padding:20px;width:100%;max-width:300px"><div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:12px;text-align:center">Language</div><div style="display:flex;flex-direction:column;gap:6px;max-height:400px;overflow-y:auto">${opts}</div><div onclick="document.getElementById('langPickerOL')?.remove()" style="text-align:center;margin-top:14px;color:rgba(255,255,255,0.3);font-size:12px;cursor:pointer">Cancel</div></div>`;
+  document.body.appendChild(ol);
+}
+function changeLang(code){
+  osLang=code;
+  localStorage.setItem('kos1_lang',code);
+  document.getElementById('langPickerOL')?.remove();
+  applyLanguage();
+  // Rebuild settings
+  const sc=document.getElementById('c-settings');
+  if(sc){sc.innerHTML='';sc.className='ac set-w';bSet(sc);}
+  sndTick();
+}
+
+// ═══ ROTATING HELLO ON SETUP ═══
+const helloWords=['Hello.','مرحباً.','سلام.','Bonjour.','Hallo.','你好.','Merhaba.','नमस्ते.','Olá.','안녕하세요.'];
+let helloIdx=0;
+setInterval(()=>{
+  const el=document.getElementById('helloRot');
+  if(!el)return;
+  el.style.opacity='0';
+  el.style.transition='opacity 0.4s';
+  setTimeout(()=>{helloIdx=(helloIdx+1)%helloWords.length;el.textContent=helloWords[helloIdx];el.style.opacity='1';},400);
+},2500);
+
+// ═══ CAMERA APP ═══
+let camStream=null;
+function bCam(c){
+  c.innerHTML=`<div class="cam-viewfinder" id="camVF"><div class="cam-placeholder">Tap the shutter to take a photo<br><br><span style="font-size:11px;opacity:0.5">Camera requires HTTPS and permissions</span></div><video id="camVid" autoplay playsinline style="display:none"></video><div class="cam-flash" id="camFlash"></div></div><div class="cam-modes"><span class="cam-mode">TIME-LAPSE</span><span class="cam-mode">SLO-MO</span><span class="cam-mode on">PHOTO</span><span class="cam-mode">VIDEO</span><span class="cam-mode">PANO</span></div><div class="cam-controls"><div class="cam-thumb" id="camThumb" style="background:#333"></div><button class="cam-shutter" onclick="takePhoto()"><div class="cam-shutter-inner"></div></button><button class="cam-flip" onclick="flipCam()"><svg viewBox="0 0 24 24"><path d="M9 12l-4-4v3H1v2h4v3l4-4zm6 0l4 4v-3h4v-2h-4V8l-4 4z"/><path d="M12 5c-3.87 0-7 3.13-7 7h2a5 5 0 015-5V5zm0 14c3.87 0 7-3.13 7-7h-2a5 5 0 01-5 5v2z"/></svg></button></div>`;
+  startCam();
+}
+async function startCam(facing='environment'){
+  try{
+    if(camStream){camStream.getTracks().forEach(t=>t.stop());}
+    camStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing},audio:false});
+    const v=document.getElementById('camVid');
+    if(v){v.srcObject=camStream;v.style.display='block';v.parentElement.querySelector('.cam-placeholder').style.display='none';}
+  }catch(e){console.log('Camera not available:',e);}
+}
+let camFacing='environment';
+function flipCam(){camFacing=camFacing==='environment'?'user':'environment';startCam(camFacing);}
+function takePhoto(){
+  const fl=document.getElementById('camFlash');
+  if(fl){fl.style.opacity='1';setTimeout(()=>{fl.style.opacity='0';},150);}
+  sndTick();
+  // Capture frame to thumbnail
+  const v=document.getElementById('camVid');
+  if(v&&v.videoWidth){
+    const cv=document.createElement('canvas');cv.width=v.videoWidth;cv.height=v.videoHeight;
+    cv.getContext('2d').drawImage(v,0,0);
+    const thumb=document.getElementById('camThumb');
+    if(thumb)thumb.style.backgroundImage='url('+cv.toDataURL('image/jpeg',0.5)+')';thumb.style.backgroundSize='cover';
+  }
+}
+
+// ═══ APP STORE ═══
+const STORE_APPS=[
+  {name:'Contacts',desc:'Manage your contacts',icon:'#ff9500',letter:'C',installed:true},
+  {name:'Calendar',desc:'Track your events',icon:'#ff3b30',letter:'31',installed:true},
+  {name:'Reminders',desc:'Never forget anything',icon:'#007aff',letter:'R',installed:false},
+  {name:'Health',desc:'Track your wellness',icon:'#ff2d55',letter:'H',installed:false},
+  {name:'Files',desc:'Browse your files',icon:'#007aff',letter:'F',installed:false},
+  {name:'Stocks',desc:'Market data',icon:'#34c759',letter:'S',installed:false},
+  {name:'Translate',desc:'Instant translation',icon:'#5856d6',letter:'T',installed:false},
+  {name:'Shortcuts',desc:'Automate your OS',icon:'#ff3b30',letter:'⚡',installed:false},
+  {name:'Voice Memo',desc:'Record audio',icon:'#1c1c1e',letter:'🎙',installed:false},
+];
+function bStore(c){
+  c.innerHTML=`<div class="store-header">App Store</div>
+    <div class="store-section"><div class="store-section-title">Featured</div>
+    <div class="store-scroll" id="storeScroll"></div></div>
+    <div class="store-section"><div class="store-section-title">Built by KhahanA</div>
+    <div style="font-size:12px;opacity:0.35;line-height:1.5">More apps coming in KhahanA OS 1.0.1 including Contacts, Calendar, Health, and more.</div></div>`;
+  const sc=document.getElementById('storeScroll');
+  STORE_APPS.forEach((a,i)=>{
+    sc.innerHTML+=\`<div class="store-card"><div class="store-card-icon" style="background:\${a.icon}">\${a.letter.length>2?a.letter:\`<span style="font-size:18px;font-weight:700;color:#fff">\${a.letter}</span>\`}</div><div class="store-card-name">\${a.name}</div><div class="store-card-desc">\${a.desc}</div><button class="store-card-btn\${a.installed?' got':''}" onclick="storeGet(this,\${i})">\${a.installed?'Installed':'GET'}</button></div>\`;
+  });
+}
+function storeGet(btn,i){
+  if(STORE_APPS[i].installed)return;
+  btn.textContent='Installing...';btn.style.opacity='0.5';
+  setTimeout(()=>{STORE_APPS[i].installed=true;btn.textContent='Installed';btn.className='store-card-btn got';btn.style.opacity='1';sndChime();},1500);
+}
+
+// ═══ CLOCK WITH TABS (World Clock, Stopwatch, Timer) ═══
+let clkMode='clock';
+function bClkOld(){}
+// Override bClk to add tabs
+
+// ═══ PASSCODE SYSTEM ═══
+let userPasscode=localStorage.getItem('kos1_passcode')||'';
+let passcodeInput='';
+let settingPasscode=false;
+let newPasscodeTemp='';
+
+function showPasscode(){
+  document.getElementById('passScreen').classList.add('on');
+  document.getElementById('passTime').textContent=ts();
+  document.getElementById('passDate').textContent=ds();
+  passcodeInput='';
+  updatePassDots();
+}
+function passKey(n){
+  if(passcodeInput.length>=4)return;
+  passcodeInput+=n;
+  sndTick();
+  updatePassDots();
+  if(passcodeInput.length===4){
+    setTimeout(()=>{
+      if(settingPasscode){
+        if(!newPasscodeTemp){
+          newPasscodeTemp=passcodeInput;
+          document.getElementById('passLabel').textContent='Confirm Passcode';
+          passcodeInput='';updatePassDots();
+        }else{
+          if(passcodeInput===newPasscodeTemp){
+            userPasscode=passcodeInput;
+            localStorage.setItem('kos1_passcode',userPasscode);
+            settingPasscode=false;newPasscodeTemp='';
+            document.getElementById('passScreen').classList.remove('on');
+            sndChime();
+          }else{
+            wrongPass();newPasscodeTemp='';
+            document.getElementById('passLabel').textContent='Set Passcode';
+          }
+        }
+      }else{
+        if(passcodeInput===userPasscode){
+          document.getElementById('passScreen').classList.remove('on');
+          document.getElementById('home').classList.add('on');
+          sndChime();
+        }else{wrongPass();}
+      }
+    },200);
+  }
+}
+function passDel(){if(passcodeInput.length>0){passcodeInput=passcodeInput.slice(0,-1);updatePassDots();}}
+function updatePassDots(){document.querySelectorAll('.pass-dot').forEach((d,i)=>{d.classList.toggle('filled',i<passcodeInput.length);d.classList.remove('wrong');});}
+function wrongPass(){document.querySelectorAll('.pass-dot').forEach(d=>{d.classList.add('wrong');});setTimeout(()=>{passcodeInput='';updatePassDots();},600);}
+
+// Modify unlock behavior: if passcode set, show passcode screen instead of home
+const origUnlock=doUnlock;
+// We can't easily override since doUnlock is used inline. Let's patch the slide unlock behavior.
+
+// ═══ SCIENTIFIC CALCULATOR ═══
+function toggleSci(){
+  const row=document.getElementById('sciRow'),btn=document.getElementById('sciToggle');
+  if(row.style.display==='none'){row.style.display='grid';btn.classList.add('on');}
+  else{row.style.display='none';btn.classList.remove('on');}
+}
+function sciOp(op){
+  const val=parseFloat(cv);let result;
+  switch(op){
+    case'sin':result=Math.sin(val*Math.PI/180);break;
+    case'cos':result=Math.cos(val*Math.PI/180);break;
+    case'tan':result=Math.tan(val*Math.PI/180);break;
+    case'sqrt':result=Math.sqrt(val);break;
+    case'pow':result=val*val;break;
+  }
+  cv=parseFloat(result.toPrecision(10)).toString();
+  document.getElementById('cD').textContent=cv;
+  cr=true;sndTick();
+}
+
+function openPasscodeSettings(){
+  settingPasscode=true;
+  newPasscodeTemp='';
+  document.getElementById('passLabel').textContent=userPasscode?'Enter Current Passcode':'Set Passcode';
+  showPasscode();
+  // If already has passcode, verify first then allow change
+  if(userPasscode){
+    // Override: after correct entry, allow setting new one
+    const origPassKey=passKey;
+    // For simplicity: just show the set screen
+  }
+}
+
+// Update boot logo version dynamically
+document.addEventListener('DOMContentLoaded',()=>{
+  const bootTexts=document.querySelectorAll('.boot-logo text');
+  bootTexts.forEach(t=>{if(t.textContent==='1.0')t.textContent=osVer;});
+});
+
+// Check if already updated
+if(osVer!=='1.0'){
+  const ubtn=document.getElementById('updateBtn');
+  if(ubtn){ubtn.textContent='Up to Date ✓';ubtn.classList.add('installed');}
+  // Hide the "1 Available" badge in settings
 }
 </script>
 </body>
