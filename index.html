@@ -318,8 +318,152 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 .search-item-ic{width:28px;height:28px;border-radius:7px;display:flex;justify-content:center;align-items:center;flex-shrink:0;}
 .search-item-ic svg{width:15px;height:15px;fill:#fff;}
 .search-cancel{position:absolute;top:calc(var(--sb) + 14px);right:16px;background:none;border:none;color:var(--accent);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;z-index:2;}
+
+/* SOFTWARE UPDATE */
+.update-overlay{position:absolute;inset:0;z-index:7000;background:#efeff4;display:none;flex-direction:column;}
+.update-overlay.open{display:flex;}
+.update-header{height:44px;margin-top:var(--sb);flex-shrink:0;display:flex;align-items:center;justify-content:center;position:relative;background:linear-gradient(180deg,#b8d4e8 0%,#7ba7c9 2%,#4f8ab5 50%,#3a6d94 98%,#2a5070 100%);border-bottom:1px solid rgba(0,0,0,0.2);}
+.update-header .t{color:#fff;font-size:17px;font-weight:700;text-shadow:0 -1px 0 rgba(0,0,0,0.3);}
+.update-header .bk{position:absolute;left:6px;top:0;height:100%;display:flex;align-items:center;background:none;border:none;color:rgba(255,255,255,0.9);font-size:12px;font-weight:500;cursor:pointer;padding:0 6px;font-family:inherit;}
+.update-header .bk svg{width:9px;height:16px;fill:none;stroke:rgba(255,255,255,0.9);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+.update-body{flex:1;overflow-y:auto;padding:20px 16px;}
+.update-icon{width:70px;height:70px;margin:0 auto 16px;display:flex;justify-content:center;align-items:center;}
+.update-icon svg{width:70px;height:70px;}
+.update-ver{text-align:center;font-size:22px;font-weight:700;color:#111;}
+.update-size{text-align:center;font-size:13px;color:#8e8e93;margin-top:4px;}
+.update-notes{background:#fff;border-radius:12px;padding:14px;margin-top:16px;font-size:13px;line-height:1.6;color:#333;}
+.update-notes h3{font-size:14px;font-weight:700;margin-bottom:6px;}
+.update-bar-wrap{width:100%;height:6px;background:#e0e0e0;border-radius:3px;margin-top:16px;overflow:hidden;display:none;}
+.update-bar-wrap.show{display:block;}
+.update-bar-fill{height:100%;width:0%;background:var(--accent);border-radius:3px;transition:width 0.3s;}
+.update-status{text-align:center;font-size:12px;color:#8e8e93;margin-top:8px;}
+.update-btn{display:block;width:100%;padding:14px;background:var(--accent);color:#000;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:16px;}
+.update-btn:active{opacity:0.8;}
+.update-btn.installed{background:#e0e0e0;color:#8e8e93;}
+
+/* FIREBASE MESSAGES */
+.msg-user-bar{display:flex;gap:6px;padding:8px;background:#f2f2f7;border-bottom:0.5px solid #d1d1d6;flex-shrink:0;align-items:center;}
+.msg-user-bar input{flex:1;padding:7px 10px;border:1px solid #d1d1d6;border-radius:8px;font-size:12px;outline:none;background:#fff;font-family:inherit;-webkit-user-select:text;user-select:text;}
+.msg-user-bar button{background:var(--accent);color:#000;border:none;border-radius:8px;padding:7px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;}
+.msg-sender{font-size:10px;font-weight:600;color:var(--accent);margin-bottom:2px;}
 #flash{position:absolute;inset:0;background:#fff;z-index:99999;display:none;}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js">
+// ═══ SOFTWARE UPDATE ═══
+let updateRunning=false;
+function startUpdate(){
+  if(updateRunning)return;
+  const btn=document.getElementById('updateBtn');
+  const bar=document.getElementById('updateBarWrap');
+  const fill=document.getElementById('updateBarFill');
+  const status=document.getElementById('updateStatus');
+  
+  if(btn.classList.contains('installed')){return;}
+  
+  updateRunning=true;
+  btn.style.display='none';
+  bar.classList.add('show');
+  status.textContent='Downloading...';
+  
+  let prog=0;
+  const dlInterval=setInterval(()=>{
+    prog+=Math.random()*3+0.5;
+    if(prog>100)prog=100;
+    fill.style.width=prog+'%';
+    status.textContent='Downloading... '+Math.round(prog)+'%';
+    
+    if(prog>=100){
+      clearInterval(dlInterval);
+      status.textContent='Preparing update...';
+      fill.style.background='#ffcc00';
+      
+      setTimeout(()=>{
+        status.textContent='Verifying...';
+        setTimeout(()=>{
+          fill.style.background='var(--accent)';
+          status.textContent='Installing...';
+          let iProg=0;
+          const iInterval=setInterval(()=>{
+            iProg+=Math.random()*4+1;
+            if(iProg>100)iProg=100;
+            fill.style.width=iProg+'%';
+            status.textContent='Installing... '+Math.round(iProg)+'%';
+            if(iProg>=100){
+              clearInterval(iInterval);
+              status.textContent='KhahanA OS 1.1 has been installed successfully.';
+              status.style.color='var(--accent)';
+              btn.style.display='block';
+              btn.textContent='Up to Date ✓';
+              btn.classList.add('installed');
+              bar.classList.remove('show');
+              updateRunning=false;
+              sndChime();
+            }
+          },120);
+        },1500);
+      },2000);
+    }
+  },100);
+}
+</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js">
+// ═══ SOFTWARE UPDATE ═══
+let updateRunning=false;
+function startUpdate(){
+  if(updateRunning)return;
+  const btn=document.getElementById('updateBtn');
+  const bar=document.getElementById('updateBarWrap');
+  const fill=document.getElementById('updateBarFill');
+  const status=document.getElementById('updateStatus');
+  
+  if(btn.classList.contains('installed')){return;}
+  
+  updateRunning=true;
+  btn.style.display='none';
+  bar.classList.add('show');
+  status.textContent='Downloading...';
+  
+  let prog=0;
+  const dlInterval=setInterval(()=>{
+    prog+=Math.random()*3+0.5;
+    if(prog>100)prog=100;
+    fill.style.width=prog+'%';
+    status.textContent='Downloading... '+Math.round(prog)+'%';
+    
+    if(prog>=100){
+      clearInterval(dlInterval);
+      status.textContent='Preparing update...';
+      fill.style.background='#ffcc00';
+      
+      setTimeout(()=>{
+        status.textContent='Verifying...';
+        setTimeout(()=>{
+          fill.style.background='var(--accent)';
+          status.textContent='Installing...';
+          let iProg=0;
+          const iInterval=setInterval(()=>{
+            iProg+=Math.random()*4+1;
+            if(iProg>100)iProg=100;
+            fill.style.width=iProg+'%';
+            status.textContent='Installing... '+Math.round(iProg)+'%';
+            if(iProg>=100){
+              clearInterval(iInterval);
+              status.textContent='KhahanA OS 1.1 has been installed successfully.';
+              status.style.color='var(--accent)';
+              btn.style.display='block';
+              btn.textContent='Up to Date ✓';
+              btn.classList.add('installed');
+              bar.classList.remove('show');
+              updateRunning=false;
+              sndChime();
+            }
+          },120);
+        },1500);
+      },2000);
+    }
+  },100);
+}
+</script>
 </head>
 <body>
 <canvas id="pBg"></canvas>
@@ -453,6 +597,33 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
   <div class="nc-list" id="ncL"></div>
 </div>
 
+
+<!-- SOFTWARE UPDATE -->
+<div class="update-overlay" id="updateOverlay">
+  <div class="update-header">
+    <button class="bk" onclick="document.getElementById('updateOverlay').classList.remove('open')"><svg viewBox="0 0 12 20"><path d="M10 2L2 10l8 8"/></svg></button>
+    <span class="t">Software Update</span>
+  </div>
+  <div class="update-body">
+    <div class="update-icon">
+      <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="34" fill="none" stroke="#00D4AA" stroke-width="2"/><text x="40" y="33" text-anchor="middle" font-size="10" fill="#333" font-weight="300" font-family="Overpass,sans-serif">KhahanA</text><text x="40" y="48" text-anchor="middle" font-size="18" fill="#00D4AA" font-weight="800" font-family="Overpass,sans-serif">OS</text><text x="40" y="60" text-anchor="middle" font-size="9" fill="#8e8e93" font-weight="200" font-family="Overpass,sans-serif">1.1</text></svg>
+    </div>
+    <div class="update-ver">KhahanA OS 1.1</div>
+    <div class="update-size">248.3 MB</div>
+    <div class="update-notes">
+      <h3>What's New</h3>
+      • Real-time messaging between KhahanA OS users<br>
+      • Software Update screen with download progress<br>
+      • Improved device detection for iPhone 16e<br>
+      • Modern status bar for notch and Dynamic Island models<br>
+      • Larger app icons with refined designs<br>
+      • Bug fixes and performance improvements
+    </div>
+    <div class="update-bar-wrap" id="updateBarWrap"><div class="update-bar-fill" id="updateBarFill"></div></div>
+    <div class="update-status" id="updateStatus"></div>
+    <button class="update-btn" id="updateBtn" onclick="startUpdate()">Download and Install</button>
+  </div>
+</div>
 <div id="flash"></div>
 
 <script>
@@ -789,8 +960,90 @@ function bN(c){c.innerHTML=`<div class="notes-w"><textarea placeholder="Start ty
 
 function bPho(c){c.innerHTML=`<div class="pho-t"><div class="pho-tb on">All Photos</div><div class="pho-tb">Albums</div><div class="pho-tb">Moments</div></div><div class="pho-g" id="pG"></div>`;const g=document.getElementById('pG');[['#e74c3c','#f39c12'],['#3498db','#2ecc71'],['#9b59b6','#e74c3c'],['#1abc9c','#3498db'],['#f39c12','#e74c3c'],['#2ecc71','#1abc9c'],['#e74c3c','#9b59b6'],['#3498db','#f39c12'],['#1abc9c','#e74c3c'],['#9b59b6','#3498db'],['#f39c12','#2ecc71'],['#e74c3c','#1abc9c'],['#2c3e50','#3498db'],['#e67e22','#e74c3c'],['#1abc9c','#9b59b6']].forEach(([a,b],i)=>{const d=document.createElement('div');d.className='pho-i';d.style.background=`linear-gradient(${40+i*25}deg,${a},${b})`;g.appendChild(d);});}
 
-function bMsg(c){c.innerHTML=`<div class="msg-l" id="mL"></div><div class="msg-b"><input id="mI" placeholder="${t ? t('msgPh') : 'Message'}" onkeydown="if(event.key==='Enter')mS()"><button onclick="mS()">Send</button></div>`;const l=document.getElementById('mL');[{t:'r',m:'Hey! How\'s it going?'},{t:'s',m:'Building KhahanA OS with Ace'},{t:'r',m:'Nice! What are you working on?'},{t:'s',m:'A full OS simulator'},{t:'r',m:'That\'s incredible!'}].forEach(({t,m})=>{const d=document.createElement('div');d.className='bu '+(t==='s'?'s':'r');d.innerHTML=m+`<span class="bt">${ts()}</span>`;l.appendChild(d);});l.scrollTop=l.scrollHeight;}
-function mS(){const inp=document.getElementById('mI'),msg=inp.value.trim();if(!msg)return;sndTick();const l=document.getElementById('mL'),b=document.createElement('div');b.className='bu s';b.innerHTML=msg+`<span class="bt">${ts()}</span>`;l.appendChild(b);inp.value='';l.scrollTop=l.scrollHeight;setTimeout(()=>{const r=document.createElement('div');r.className='bu r';r.innerHTML=['Cool!','Nice one 👍','Tell me more!','🔥','Love it!'][Math.floor(Math.random()*5)]+`<span class="bt">${ts()}</span>`;l.appendChild(r);l.scrollTop=l.scrollHeight;},800+Math.random()*600);}
+// ═══ FIREBASE MESSAGING ═══
+let fbDb=null,fbUnsub=null,msgUser='';
+const FB_CONFIG={
+  apiKey:"AIzaSyCvK027LGN0N1EpmZDKKIfqsJJqcpDTJ7U",
+  authDomain:"khahanaos.firebaseapp.com",
+  projectId:"khahanaos",
+  storageBucket:"khahanaos.firebasestorage.app",
+  messagingSenderId:"244302154765",
+  appId:"1:244302154765:web:fc79af2dec241457561944"
+};
+
+function initFirebase(){
+  if(fbDb)return true;
+  try{
+    if(FB_CONFIG.apiKey==='YOUR_API_KEY'){return false;}
+    const app=firebase.initializeApp(FB_CONFIG);
+    fbDb=firebase.firestore();
+    return true;
+  }catch(e){console.error('Firebase init failed:',e);return false;}
+}
+
+function bMsg(c){
+  const hasFirebase=initFirebase();
+  msgUser=window.khahanAID||'User_'+Math.random().toString(36).substr(2,4);
+  
+  c.innerHTML=`
+    <div class="msg-user-bar">
+      <span style="font-size:10px;color:#8e8e93;white-space:nowrap">You:</span>
+      <input id="msgUsername" value="${msgUser}" placeholder="Your name" onchange="msgUser=this.value">
+    </div>
+    <div class="msg-l" id="mL">
+      ${!hasFirebase?'<div style="text-align:center;padding:20px;font-size:12px;color:#8e8e93;line-height:1.6">Firebase not configured yet.<br>Messages are local only.<br><br>To enable real-time chat:<br>1. Create a free Firebase project<br>2. Replace the config in the HTML<br>3. Enable Firestore in Firebase Console</div>':'<div style="text-align:center;padding:20px;font-size:12px;color:var(--accent)">Connected. Messages are live.</div>'}
+    </div>
+    <div class="msg-b">
+      <input id="mI" placeholder="${t('msgPh')}" onkeydown="if(event.key==='Enter')mS()">
+      <button onclick="mS()">${t('send')}</button>
+    </div>`;
+  
+  if(hasFirebase){listenMessages();}
+}
+
+function listenMessages(){
+  if(!fbDb)return;
+  if(fbUnsub)fbUnsub();
+  fbUnsub=fbDb.collection('kos_messages').orderBy('ts','asc').limitToLast(50)
+    .onSnapshot(snap=>{
+      const l=document.getElementById('mL');
+      if(!l)return;
+      l.innerHTML='';
+      snap.forEach(doc=>{
+        const d=doc.data();
+        const isMine=d.user===msgUser;
+        const el=document.createElement('div');
+        el.className='bu '+(isMine?'s':'r');
+        const senderHtml=isMine?'':`<div class="msg-sender">${d.user||'Unknown'}</div>`;
+        const time=d.ts?new Date(d.ts.seconds*1000).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}):'';
+        el.innerHTML=senderHtml+d.msg+`<span class="bt">${time}</span>`;
+        l.appendChild(el);
+      });
+      l.scrollTop=l.scrollHeight;
+    });
+}
+
+function mS(){
+  const inp=document.getElementById('mI'),msg=inp.value.trim();
+  if(!msg)return;
+  sndTick();
+  msgUser=document.getElementById('msgUsername')?.value||msgUser;
+  
+  if(fbDb){
+    fbDb.collection('kos_messages').add({
+      user:msgUser,
+      msg:msg,
+      ts:firebase.firestore.FieldValue.serverTimestamp()
+    });
+  }else{
+    // Fallback: local only
+    const l=document.getElementById('mL'),b=document.createElement('div');
+    b.className='bu s';b.innerHTML=msg+`<span class="bt">${ts()}</span>`;
+    l.appendChild(b);l.scrollTop=l.scrollHeight;
+    setTimeout(()=>{const r=document.createElement('div');r.className='bu r';r.innerHTML=['Cool!','Nice one 👍','Tell me more!','🔥','Love it!'][Math.floor(Math.random()*5)]+`<span class="bt">${ts()}</span>`;l.appendChild(r);l.scrollTop=l.scrollHeight;},800+Math.random()*600);
+  }
+  inp.value='';
+}
 
 function bSaf(c){c.innerHTML=`<div class="saf-url"><input value="khahana.com" placeholder="Search or enter website"></div><div class="saf-m"><div class="saf-ft">Favorites</div><div class="saf-g">${[['KA','#1B3A5C','KhahanA'],['G','#4285f4','Google'],['YT','#ff0000','YouTube'],['X','#000','X'],['TV','#131722','TradingView'],['in','#0077b5','LinkedIn'],['W','#333','Wikipedia'],['R','#ff4500','Reddit']].map(([l,bg,n])=>`<div class="saf-f"><div class="saf-fi" style="background:${bg}">${l}</div><span>${n}</span></div>`).join('')}</div></div>`;}
 
@@ -812,6 +1065,7 @@ function bSet(c){
   <div class="sg"><div class="sr"><div class="sr-i" style="background:#34c759"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="#fff"/></svg></div><span class="sr-l">${t("battery")}</span><span class="sr-v" id="setBatt">100%</span><span class="sr-a">›</span></div></div>
   <div class="sgt">${t("displayRes")}</div>
   <div class="rp" id="rp"></div>
+  <div class="sg"><div class="sr" onclick="document.getElementById('updateOverlay').classList.add('open')"><div class="sr-i" style="background:#ff3b30"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15v-2h2v2h-2zm0-4V7h2v6h-2z" fill="#fff"/></svg></div><span class="sr-l">Software Update</span><span class="sr-v" style="color:#ff3b30">1 Available</span><span class="sr-a">›</span></div></div>
   <div class="sg"><div class="sr"><div class="sr-i" style="background:#8e8e93"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#fff"/></svg></div><span class="sr-l">${t("general")}</span><span class="sr-a">›</span></div></div>
   <div class="sg"><div class="sr" style="justify-content:center;color:#8e8e93;font-size:12px;cursor:default">KhahanA OS 1.0 (Build 26A329)</div></div>
   <div style="height:20px"></div>`;
@@ -1036,6 +1290,63 @@ let mSwX=0,mSw=false;
 document.getElementById('home')?.addEventListener('mousedown',e=>{mSwX=e.clientX;mSw=true;});
 document.addEventListener('mousemove',e=>{if(!mSw)return;if(e.clientX-mSwX<-80){mSw=false;openSearch();}});
 document.addEventListener('mouseup',()=>{mSw=false;});
+
+// ═══ SOFTWARE UPDATE ═══
+let updateRunning=false;
+function startUpdate(){
+  if(updateRunning)return;
+  const btn=document.getElementById('updateBtn');
+  const bar=document.getElementById('updateBarWrap');
+  const fill=document.getElementById('updateBarFill');
+  const status=document.getElementById('updateStatus');
+  
+  if(btn.classList.contains('installed')){return;}
+  
+  updateRunning=true;
+  btn.style.display='none';
+  bar.classList.add('show');
+  status.textContent='Downloading...';
+  
+  let prog=0;
+  const dlInterval=setInterval(()=>{
+    prog+=Math.random()*3+0.5;
+    if(prog>100)prog=100;
+    fill.style.width=prog+'%';
+    status.textContent='Downloading... '+Math.round(prog)+'%';
+    
+    if(prog>=100){
+      clearInterval(dlInterval);
+      status.textContent='Preparing update...';
+      fill.style.background='#ffcc00';
+      
+      setTimeout(()=>{
+        status.textContent='Verifying...';
+        setTimeout(()=>{
+          fill.style.background='var(--accent)';
+          status.textContent='Installing...';
+          let iProg=0;
+          const iInterval=setInterval(()=>{
+            iProg+=Math.random()*4+1;
+            if(iProg>100)iProg=100;
+            fill.style.width=iProg+'%';
+            status.textContent='Installing... '+Math.round(iProg)+'%';
+            if(iProg>=100){
+              clearInterval(iInterval);
+              status.textContent='KhahanA OS 1.1 has been installed successfully.';
+              status.style.color='var(--accent)';
+              btn.style.display='block';
+              btn.textContent='Up to Date ✓';
+              btn.classList.add('installed');
+              bar.classList.remove('show');
+              updateRunning=false;
+              sndChime();
+            }
+          },120);
+        },1500);
+      },2000);
+    }
+  },100);
+}
 </script>
 </body>
 </html>
