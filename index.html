@@ -424,7 +424,7 @@ canvas#pBg{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-ev
 .store-card-btn.got{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.3);}
 #flash{position:absolute;inset:0;background:#fff;z-index:99999;display:none;}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 // ═══ SOFTWARE UPDATE ═══
 let updateRunning=false;
 function startUpdate(){
@@ -561,7 +561,7 @@ function bStore(c){
     <div style="font-size:12px;opacity:0.35;line-height:1.5">More apps coming in KhahanA OS 1.0.1 including Contacts, Calendar, Health, and more.</div></div>`;
   const sc=document.getElementById('storeScroll');
   STORE_APPS.forEach((a,i)=>{
-    sc.innerHTML+=\`<div class="store-card"><div class="store-card-icon" style="background:\${a.icon}">\${a.letter.length>2?a.letter:\`<span style="font-size:18px;font-weight:700;color:#fff">\${a.letter}</span>\`}</div><div class="store-card-name">\${a.name}</div><div class="store-card-desc">\${a.desc}</div><button class="store-card-btn\${a.installed?' got':''}" onclick="storeGet(this,\${i})">\${a.installed?'Installed':'GET'}</button></div>\`;
+    sc.innerHTML+=`<div class="store-card"><div class="store-card-icon" style="background:${a.icon}">${a.letter.length>2?a.letter:`<span style="font-size:18px;font-weight:700;color:#fff">${a.letter}</span>`}</div><div class="store-card-name">${a.name}</div><div class="store-card-desc">${a.desc}</div><button class="store-card-btn${a.installed?' got':''}" onclick="storeGet(this,${i})">${a.installed?'Installed':'GET'}</button></div>`;
   });
 }
 function storeGet(btn,i){
@@ -627,8 +627,6 @@ function updatePassDots(){document.querySelectorAll('.pass-dot').forEach((d,i)=>
 function wrongPass(){document.querySelectorAll('.pass-dot').forEach(d=>{d.classList.add('wrong');});setTimeout(()=>{passcodeInput='';updatePassDots();},600);}
 
 // Modify unlock behavior: if passcode set, show passcode screen instead of home
-const origUnlock=doUnlock;
-// We can't easily override since doUnlock is used inline. Let's patch the slide unlock behavior.
 
 // ═══ SCIENTIFIC CALCULATOR ═══
 function toggleSci(){
@@ -675,8 +673,8 @@ if(osVer!=='1.0'){
   if(ubtn){ubtn.textContent='Up to Date ✓';ubtn.classList.add('installed');}
   // Hide the "1 Available" badge in settings
 }
-</script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js">
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 // ═══ SOFTWARE UPDATE ═══
 let updateRunning=false;
 function startUpdate(){
@@ -813,7 +811,7 @@ function bStore(c){
     <div style="font-size:12px;opacity:0.35;line-height:1.5">More apps coming in KhahanA OS 1.0.1 including Contacts, Calendar, Health, and more.</div></div>`;
   const sc=document.getElementById('storeScroll');
   STORE_APPS.forEach((a,i)=>{
-    sc.innerHTML+=\`<div class="store-card"><div class="store-card-icon" style="background:\${a.icon}">\${a.letter.length>2?a.letter:\`<span style="font-size:18px;font-weight:700;color:#fff">\${a.letter}</span>\`}</div><div class="store-card-name">\${a.name}</div><div class="store-card-desc">\${a.desc}</div><button class="store-card-btn\${a.installed?' got':''}" onclick="storeGet(this,\${i})">\${a.installed?'Installed':'GET'}</button></div>\`;
+    sc.innerHTML+=`<div class="store-card"><div class="store-card-icon" style="background:${a.icon}">${a.letter.length>2?a.letter:`<span style="font-size:18px;font-weight:700;color:#fff">${a.letter}</span>`}</div><div class="store-card-name">${a.name}</div><div class="store-card-desc">${a.desc}</div><button class="store-card-btn${a.installed?' got':''}" onclick="storeGet(this,${i})">${a.installed?'Installed':'GET'}</button></div>`;
   });
 }
 function storeGet(btn,i){
@@ -879,8 +877,6 @@ function updatePassDots(){document.querySelectorAll('.pass-dot').forEach((d,i)=>
 function wrongPass(){document.querySelectorAll('.pass-dot').forEach(d=>{d.classList.add('wrong');});setTimeout(()=>{passcodeInput='';updatePassDots();},600);}
 
 // Modify unlock behavior: if passcode set, show passcode screen instead of home
-const origUnlock=doUnlock;
-// We can't easily override since doUnlock is used inline. Let's patch the slide unlock behavior.
 
 // ═══ SCIENTIFIC CALCULATOR ═══
 function toggleSci(){
@@ -927,7 +923,7 @@ if(osVer!=='1.0'){
   if(ubtn){ubtn.textContent='Up to Date ✓';ubtn.classList.add('installed');}
   // Hide the "1 Available" badge in settings
 }
-</script>
+
 </head>
 <body>
 <canvas id="pBg"></canvas>
@@ -1477,22 +1473,22 @@ function switchClkTab(mode,el){
   const cc=document.getElementById('clkContent');if(!cc)return;
   if(mode==='clock'){
     cc.innerHTML=`<div class="cf" id="ckF"><div class="cdot"></div><div class="ch chh" id="ckH"></div><div class="ch chm" id="ckM"></div><div class="ch chs" id="ckS"></div></div><div class="clk-digi" id="ckD">00:00:00</div>`;
-    const f=document.getElementById('ckF');for(let i=0;i<60;i++){const m=document.createElement('div');m.style.cssText=\`position:absolute;top:\${i%5===0?'5':'7'}px;left:50%;width:\${i%5===0?'2':'1'}px;height:\${i%5===0?'10':'6'}px;background:\${i%5===0?'rgba(0,212,170,0.7)':'rgba(255,255,255,0.3)'};margin-left:-\${i%5===0?'1':'0.5'}px;transform:rotate(\${i*6}deg);transform-origin:center \${85-5}px;\`;f.appendChild(m);}
+    const f=document.getElementById('ckF');for(let i=0;i<60;i++){const m=document.createElement('div');m.style.cssText=`position:absolute;top:${i%5===0?'5':'7'}px;left:50%;width:${i%5===0?'2':'1'}px;height:${i%5===0?'10':'6'}px;background:${i%5===0?'rgba(0,212,170,0.7)':'rgba(255,255,255,0.3)'};margin-left:-${i%5===0?'1':'0.5'}px;transform:rotate(${i*6}deg);transform-origin:center ${85-5}px;`;f.appendChild(m);}
     startClk();
   }else if(mode==='world'){
     const cities=[['Dubai','UTC+4',4],['London','UTC+0',0],['New York','UTC-5',-5],['Tokyo','UTC+9',9],['Sydney','UTC+11',11],['Los Angeles','UTC-8',-8]];
     cc.innerHTML='<div style="width:100%;padding:0 16px">'+cities.map(([city,tz,off])=>{
       const d=new Date();d.setUTCHours(d.getUTCHours()+off);
       const time=d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
-      return \`<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:0.5px solid rgba(255,255,255,0.08)"><div><div style="font-size:15px;font-weight:500">\${city}</div><div style="font-size:11px;opacity:0.3">\${tz}</div></div><div style="font-size:28px;font-weight:100">\${time}</div></div>\`;
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:0.5px solid rgba(255,255,255,0.08)"><div><div style="font-size:15px;font-weight:500">${city}</div><div style="font-size:11px;opacity:0.3">${tz}</div></div><div style="font-size:28px;font-weight:100">${time}</div></div>`;
     }).join('')+'</div>';
   }else if(mode==='stopwatch'){
     cc.innerHTML=`<div class="clk-digi" id="ckD" style="margin-top:50px">00:00.00</div><div class="sw-r" style="margin-top:24px"><button class="swb rs" onclick="swR()">Reset</button><button class="swb go" id="swB" onclick="swTg()">Start</button></div><div id="swLaps" style="width:100%;padding:16px"></div>`;
   }else if(mode==='timer'){
-    cc.innerHTML=`<div class="timer-display" id="timerDisp">05:00</div><div class="timer-picker"><select id="timerMin" onchange="updateTimerDisp()">\${Array.from({length:60},(_, i)=>'<option value="'+i+'"'+(i===5?' selected':'')+'>'+i+'</option>').join('')}</select><span>min</span><select id="timerSec" onchange="updateTimerDisp()">\${Array.from({length:60},(_, i)=>'<option value="'+i+'">'+String(i).padStart(2,'0')+'</option>').join('')}</select><span>sec</span></div><div class="sw-r" style="margin-top:24px"><button class="swb rs" onclick="resetTimer()">Cancel</button><button class="swb go" id="timerBtn" onclick="toggleTimer()">Start</button></div>`;
+    cc.innerHTML=`<div class="timer-display" id="timerDisp">05:00</div><div class="timer-picker"><select id="timerMin" onchange="updateTimerDisp()">${Array.from({length:60},(_, i)=>'<option value="'+i+'"'+(i===5?' selected':'')+'>'+i+'</option>').join('')}</select><span>min</span><select id="timerSec" onchange="updateTimerDisp()">${Array.from({length:60},(_, i)=>'<option value="'+i+'">'+String(i).padStart(2,'0')+'</option>').join('')}</select><span>sec</span></div><div class="sw-r" style="margin-top:24px"><button class="swb rs" onclick="resetTimer()">Cancel</button><button class="swb go" id="timerBtn" onclick="toggleTimer()">Start</button></div>`;
   }
 }
-function startClk(){if(ckI)clearInterval(ckI);function t(){const d=new Date(),s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;const hs=document.getElementById('ckH'),ms=document.getElementById('ckM'),ss=document.getElementById('ckS');if(hs){hs.style.transform=\`rotate(\${h*30}deg)\`;ms.style.transform=\`rotate(\${m*6}deg)\`;ss.style.transform=\`rotate(\${s*6}deg)\`;}const dg=document.getElementById('ckD');if(dg&&!swO&&clkMode==='clock')dg.textContent=ft();}t();ckI=setInterval(t,1000);}
+function startClk(){if(ckI)clearInterval(ckI);function t(){const d=new Date(),s=d.getSeconds(),m=d.getMinutes()+s/60,h=(d.getHours()%12)+m/60;const hs=document.getElementById('ckH'),ms=document.getElementById('ckM'),ss=document.getElementById('ckS');if(hs){hs.style.transform=`rotate(${h*30}deg)`;ms.style.transform=`rotate(${m*6}deg)`;ss.style.transform=`rotate(${s*6}deg)`;}const dg=document.getElementById('ckD');if(dg&&!swO&&clkMode==='clock')dg.textContent=ft();}t();ckI=setInterval(t,1000);}
 
 // Timer
 let timerRunning=false,timerInt,timerLeft=300;
@@ -2019,7 +2015,7 @@ function bStore(c){
     <div style="font-size:12px;opacity:0.35;line-height:1.5">More apps coming in KhahanA OS 1.0.1 including Contacts, Calendar, Health, and more.</div></div>`;
   const sc=document.getElementById('storeScroll');
   STORE_APPS.forEach((a,i)=>{
-    sc.innerHTML+=\`<div class="store-card"><div class="store-card-icon" style="background:\${a.icon}">\${a.letter.length>2?a.letter:\`<span style="font-size:18px;font-weight:700;color:#fff">\${a.letter}</span>\`}</div><div class="store-card-name">\${a.name}</div><div class="store-card-desc">\${a.desc}</div><button class="store-card-btn\${a.installed?' got':''}" onclick="storeGet(this,\${i})">\${a.installed?'Installed':'GET'}</button></div>\`;
+    sc.innerHTML+=`<div class="store-card"><div class="store-card-icon" style="background:${a.icon}">${a.letter.length>2?a.letter:`<span style="font-size:18px;font-weight:700;color:#fff">${a.letter}</span>`}</div><div class="store-card-name">${a.name}</div><div class="store-card-desc">${a.desc}</div><button class="store-card-btn${a.installed?' got':''}" onclick="storeGet(this,${i})">${a.installed?'Installed':'GET'}</button></div>`;
   });
 }
 function storeGet(btn,i){
@@ -2085,8 +2081,6 @@ function updatePassDots(){document.querySelectorAll('.pass-dot').forEach((d,i)=>
 function wrongPass(){document.querySelectorAll('.pass-dot').forEach(d=>{d.classList.add('wrong');});setTimeout(()=>{passcodeInput='';updatePassDots();},600);}
 
 // Modify unlock behavior: if passcode set, show passcode screen instead of home
-const origUnlock=doUnlock;
-// We can't easily override since doUnlock is used inline. Let's patch the slide unlock behavior.
 
 // ═══ SCIENTIFIC CALCULATOR ═══
 function toggleSci(){
